@@ -47,5 +47,5 @@ install(FILES
     radar_estimator_ofdm.xml
     radar_estimator_rcs.xml
     radar_trigger_command.xml
-    DESTINATION share/gnuradio/grc/blocks
+    radar_soapysdr_echotimer.xml DESTINATION share/gnuradio/grc/blocks
 )
