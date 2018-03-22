@@ -52,5 +52,6 @@ install(FILES
     estimator_ofdm.h
     estimator_rcs.h
     trigger_command.h
-    soapysdr_echotimer.h DESTINATION include/radar
+    #soapysdr_echotimer.h
+    DESTINATION include/radar
 )
