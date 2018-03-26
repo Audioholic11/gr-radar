@@ -27,13 +27,10 @@
 //from soapy_source_c.cc
 #include <iostream>
 #include <algorithm> //find
-
 #include <boost/assign.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
-
 #include <gnuradio/io_signature.h>
-
 #include "arg_helpers.h"
 #include "soapy_source_c.h"
 #include "soapy_common.h"
@@ -49,6 +46,38 @@
 //from soapy_common.cc
 #include <SoapySDR/Version.hpp>
 
+
+
+//from sink_impl.h
+#include "osmosdr/sink.h"
+#include "sink_iface.h"
+#include <map>
+
+//from sink_impl.cc
+#include <gnuradio/io_signature.h>
+#include <gnuradio/constants.h>
+#include <gnuradio/blocks/throttle.h>
+#include <gnuradio/blocks/null_sink.h>
+
+
+//from soapy_sink_c.h
+#include <gnuradio/block.h>
+#include <gnuradio/sync_block.h>
+#include "osmosdr/ranges.h"
+#include "sink_iface.h"
+
+//from soapy_sink_c.cc
+#include <iostream>
+#include <algorithm> //find
+#include <boost/assign.hpp>
+#include <boost/format.hpp>
+#include <boost/lexical_cast.hpp>
+#include <gnuradio/io_signature.h>
+#include "arg_helpers.h"
+#include "soapy_sink_c.h"
+#include "soapy_common.h"
+#include <SoapySDR/Device.hpp>
+#include <SoapySDR/Version.hpp>
 
 
 

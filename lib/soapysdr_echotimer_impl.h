@@ -26,6 +26,42 @@
 #include <uhd/utils/thread_priority.hpp>
 #include <uhd/usrp/multi_usrp.hpp>
 
+//soapy
+#include <SoapySDR/Device.hpp>
+#include <SoapySDR/Constants.h>//in <SoapySDR/Device>
+#include <SoapySDR/Time>//?
+#include <SoapySDR/Version.hpp>
+#include <SoapySDR/Types.hpp>
+
+//local
+#include "soapy_source_c.h"
+#include "soapy_common.h"
+#include "arg_helpers.h"
+#include "source_iface.h"
+
+//boost
+#include <boost/thread/mutex.hpp>
+#include <boost/assign.hpp>
+#include <boost/format.hpp>
+#include <boost/lexical_cast.hpp>
+
+//osmosdr
+#include <osmosdr/ranges.h>
+#include "osmosdr/source.h"//why local?
+
+//gnuradio
+#include <gnuradio/blocks/null_source.h>
+#include <gnuradio/blocks/null_sink.h>
+#include <gnuradio/blocks/throttle.h>
+#include <gnuradio/constants.h>
+#include <gnuradio/block.h>
+#include <gnuradio/sync_block.h>
+#include <osmosdr/source.h>
+#ifdef HAVE_IQBALANCE
+#include <gnuradio/iqbalance/optimize_c.h>
+#include <gnuradio/iqbalance/fix_cc.h>
+#endif
+
 namespace gr {
   namespace radar {
 

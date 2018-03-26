@@ -25,6 +25,9 @@
 #include <gnuradio/io_signature.h>
 #include "soapysdr_echotimer_impl.h"
 
+#include <iostream>
+#include <algorithm>
+
 namespace gr {
   namespace radar {
 
@@ -53,6 +56,25 @@ namespace gr {
   		d_num_delay_samps = num_delay_samps;
   		d_out_buffer.resize(0);
 
+
+      long long d_timeNs = 0;
+      long d_timeoutUs = 0;
+
+      /*enum StreamFlags
+      {
+      SYNC_TIMESTAMP = 1,
+      END_BURST = 2,
+      OVERWRITE_OLD = 4,
+    };*/
+
+      //useful
+      _device = SoapySDR::Device::make(params_to_dict(args));
+      _stream = _device->setupStream(SOAPY_SDR_TX, "CF32", channels);
+      _device->activateStream(_stream)
+      _device->deactivateStream(_stream)
+      SoapySDR::Kwargs kw, SoapySDR::Device::enumerate()
+      ret = _device->writeStream( _stream, &input_items[0], noutput_items, flags, timeNs);
+
       //***** Setup Soapy / gr-osmosdr TX *****//
       d_args_tx = args_tx;
   		d_wire_tx = wire_tx;
@@ -63,40 +85,50 @@ namespace gr {
   		d_gain_tx = gain_tx;
   		d_timeout_tx = timeout_tx; // timeout for sending
   		d_wait_tx = wait_tx; // secs to wait befor sending
+      const size_t d_chan_tx = 0;
 
       // Setup Soapysdr TX: args (addr,...)
-  		d_usrp_tx = uhd::usrp::multi_usrp::make(d_args_tx);
-  		std::cout << "Using USRP Device (TX): " << std::endl << d_usrp_tx->get_pp_string() << std::endl;
+  		d_soapysdr_tx = SoapySDR::Device::make(d_args_tx);
+  		std::cout << "Using Soapy Device (TX): " << std::endl << d_soapysdr_tx->getHardwareKey() << std::endl;
 
   		// Setup Soapysdr TX: sample rate
   		std::cout << "Setting TX Rate: " << d_samp_rate << std::endl;
-  		d_usrp_tx->set_tx_rate(d_samp_rate);
-  		std::cout << "Actual TX Rate: " << d_usrp_tx->get_tx_rate() << std::endl;
+      //setSampleRate(const int direction, const size_t channel, const double rate);
+  		d_soapysdr_tx->setSampleRate(SOAPY_SDR_TX, d_chan_tx, d_samp_rate);
+      //getSampleRate(const int direction, const size_t channel);
+  		std::cout << "Actual TX Rate: " << d_soapysdr_tx->getSampleRate(SOAPY_SDR_TX, d_chan_tx) << std::endl;
 
   		// Setup Soapysdr TX: gain
-  		set_tx_gain(d_gain_tx);
+  		set_tx_gain(d_chan_tx, d_gain_tx);
 
-  		// Setup Soapysdr TX: tune request
-  		d_tune_request_tx = uhd::tune_request_t(d_center_freq); // FIXME: add alternative tune requests
-  		d_usrp_tx->set_tx_freq(d_tune_request_tx);
+  		// Setup Soapysdr TX: set frequency (tune?)
+      //setFrequency(const int direction, const size_t channel, const std::string &name, const double frequency, const Kwargs &args = Kwargs());
+      d_soapysdr_tx->setFrequency(SOAPY_SDR_TX, d_chan_tx, d_center_freq);
 
   		// Setup Soapysdr TX: antenna
-  		d_usrp_tx->set_tx_antenna(d_antenna_tx);
+      //setAntenna(const int direction, const size_t channel, const std::string &name);
+  		d_soapysdr_tx->setAntenna(SOAPY_SDR_TX, d_chan_tx, d_antenna_tx);
 
   		// Setup Soapysdr TX: clock source
-  		d_usrp_tx->set_clock_source(d_clock_source_tx); // Set TX clock, TX is master
+      //setClockSource(const std::string &source);
+  		d_soapysdr_tx->setClockSource(d_clock_source_tx); // Set TX clock, TX is master
 
   		// Setup Soapysdr TX: time source
-  		d_usrp_tx->set_time_source(d_time_source_tx); // Set TX time, TX is master
+      //setTimeSource(const std::string &source);
+  		d_soapysdr_tx->setTimeSource(d_time_source_tx); // Set TX time, TX is master
 
   		// Setup Soapysdr TX: timestamp
+      //setHardwareTime(const long long timeNs, const std::string &what = "");
   		if(d_time_source_tx!="gpsdo"){
-  			d_usrp_tx->set_time_now(uhd::time_spec_t(0.0)); // Do set time on startup if not gpsdo is activated.
+  			d_soapysdr_tx->setHardwareTime(0.0); // Do set time on startup if not gpsdo is activated.
       }
 
       // Setup transmit streamer
-  		uhd::stream_args_t stream_args_tx("fc32", d_wire_tx); // complex floats
-  		d_tx_stream = d_usrp_tx->get_tx_stream(stream_args_tx);
+      //Stream *setupStream( const int direction, const std::string &format, const std::vector<size_t> &channels = std::vector<size_t>(), const Kwargs &args = Kwargs());
+      d_tx_stream = d_soapysdr_tx->setupStream(SOAPY_SDR_TX, "CF32");//might need channels
+
+  		//uhd::stream_args_t stream_args_tx("fc32", d_wire_tx); // complex floats
+  		//d_tx_stream = d_soapysdr_tx->get_tx_stream(stream_args_tx);
 
   		//***** Setup USRP RX *****//
 
@@ -109,43 +141,52 @@ namespace gr {
   		d_gain_rx = gain_rx;
   		d_timeout_rx = timeout_rx; // timeout for receiving
   		d_wait_rx = wait_rx; // secs to wait befor receiving
+      const size_t d_chan_rx = 0;
 
   		// Setup USRP RX: args (addr,...)
-  		d_usrp_rx = uhd::usrp::multi_usrp::make(d_args_rx);
-  		std::cout << "Using USRP Device (RX): " << std::endl << d_usrp_rx->get_pp_string() << std::endl;
+      d_soapysdr_rx = SoapySDR::Device::make(d_args_rx);
+      std::cout << "Using Soapy Device (TX): " << std::endl << d_soapysdr_rx->getHardwareKey() << std::endl;
 
   		// Setup USRP RX: sample rate
-  		std::cout << "Setting RX Rate: " << d_samp_rate << std::endl;
-  		d_usrp_rx->set_rx_rate(d_samp_rate);
-  		std::cout << "Actual RX Rate: " << d_usrp_rx->get_rx_rate() << std::endl;
+      std::cout << "Setting RX Rate: " << d_samp_rate << std::endl;
+      //setSampleRate(const int direction, const size_t channel, const double rate);
+  		d_soapysdr_tx->setSampleRate(SOAPY_SDR_RX, d_chan_rx, d_samp_rate);
+      //getSampleRate(const int direction, const size_t channel);
+  		std::cout << "Actual RX Rate: " << d_soapysdr_tx->getSampleRate(SOAPY_SDR_RX, d_chan_rx) << std::endl;
 
   		// Setup USRP RX: gain
   		set_rx_gain(d_gain_rx);
 
-  		// Setup USRP RX: tune request
-  		d_tune_request_rx = uhd::tune_request_t(d_center_freq, d_lo_offset_rx); // FIXME: add alternative tune requests
-  		d_usrp_rx->set_rx_freq(d_tune_request_rx);
+      // Setup Soapysdr RX: set frequency (tune?)
+      //setFrequency(const int direction, const size_t channel, const std::string &name, const double frequency, const Kwargs &args = Kwargs());
+      d_soapysdr_tx->setFrequency(SOAPY_SDR_RX, d_chan_rx, d_center_freq);
 
-  		// Setup USRP RX: antenna
-  		d_usrp_rx->set_rx_antenna(d_antenna_rx);
 
-  		// Setup USRP RX: clock source
-  		d_usrp_rx->set_clock_source(d_clock_source_rx); // RX is slave, clock is set on TX
+      // Setup Soapysdr RX: antenna
+      //setAntenna(const int direction, const size_t channel, const std::string &name);
+  		d_soapysdr_tx->setAntenna(SOAPY_SDR_RX, d_chan_rx, d_antenna_rx);
 
-  		// Setup USRP RX: time source
-  		d_usrp_rx->set_time_source(d_time_source_rx);
+  		// Setup Soapysdr RX: clock source
+      //setClockSource(const std::string &source);
+  		d_soapysdr_tx->setClockSource(d_clock_source_rx); // RX is slave, clock is set on TX?
+
+  		// Setup Soapysdr RX: time source
+      //setTimeSource(const std::string &source);
+  		d_soapysdr_tx->setTimeSource(d_time_source_rx); // RX is slave, clock is set on TX?
+
+
 
       // Setup receive streamer
-  		uhd::stream_args_t stream_args_rx("fc32", d_wire_rx); // complex floats
-  		std::vector<size_t> channel_nums; channel_nums.push_back(0); // define channel!
-  		stream_args_rx.channels = channel_nums;
-  		d_rx_stream = d_usrp_rx->get_rx_stream(stream_args_rx);
+
+      d_rx_stream = d_soapysdr_rx->setupStream(SOAPY_SDR_RX, "CF32");//might need channels
+      // d_soapysdr_rx->activateStream(d_rx_stream)
+
 
       //***** Misc *****//
 
   		// Setup rx_time pmt
   		d_time_key = pmt::string_to_symbol("rx_time");
-  		d_srcid = pmt::string_to_symbol("usrp_echotimer");
+  		d_srcid = pmt::string_to_symbol("soapysdr_echotimer");
 
   		// Setup thread priority
   		//uhd::set_thread_priority_safe(); // necessary? doesnt work...
@@ -160,6 +201,8 @@ namespace gr {
      */
     soapysdr_echotimer_impl::~soapysdr_echotimer_impl()
     {
+      d_soapysdr_rx->closeStream(d_rx_stream);
+      d_soapysdr_tx->closeStream(d_tx_stream);
     }
 
     int
@@ -170,49 +213,68 @@ namespace gr {
     }
 
     void
-    soapysdr_echotimer_impl::set_num_delay_samps(int num_samps){
+    soapysdr_echotimer_impl::set_num_delay_samps(int num_samps)
+    {
 		d_num_delay_samps = num_samps;
-	}
+	  }
 
   // Personal methods
 	void
-    soapysdr_echotimer_impl::set_rx_gain(float gain){
-		d_usrp_rx->set_rx_gain(gain);
+    soapysdr_echotimer_impl::set_rx_gain( size_t chan, float gain){
+      //setGain(const int direction, const size_t channel, const double value);
+  		d_soapysdr_tx->setGain(SOAPY_SDR_RX, chan_rx, gain);
 	}
 
 	void
-    soapysdr_echotimer_impl::set_tx_gain(float gain){
-		d_usrp_tx->set_tx_gain(gain);
+    soapysdr_echotimer_impl::set_tx_gain( size_t chan, float gain){
+    //setGain(const int direction, const size_t channel, const double value);
+		d_soapysdr_tx->setGain(SOAPY_SDR_TX, chan_tx, gain);
 	}
 
-    void
-    soapysdr_echotimer_impl::send()
-    {
-		// Setup metadata for first package
-        d_metadata_tx.start_of_burst = true;
-		d_metadata_tx.end_of_burst = false;
-		d_metadata_tx.has_time_spec = true;
-		d_metadata_tx.time_spec = d_time_now_tx+uhd::time_spec_t(d_wait_tx); // Timespec needed?
-
+  void
+  soapysdr_echotimer_impl::send()
+  {
 		// Send input buffer
 		size_t num_acc_samps = 0; // Number of accumulated samples
 		size_t num_tx_samps, total_num_samps;
 		total_num_samps = d_noutput_items_send;
-		// Data to USRP
-		num_tx_samps = d_tx_stream->send(d_in_send, total_num_samps, d_metadata_tx, total_num_samps/(float)d_samp_rate+d_timeout_tx);
-		// Get timeout
+    //Data to Soapy _device
+    //virtual int writeStream(
+    //        Stream *stream,
+    //        const void * const *buffs,
+    //        const size_t numElems,
+    //        int &flags,
+    //        const long long timeNs = 0,
+    //        const long timeoutUs = 100000);
+
+
+    //SoapyLMS7->streaming->fifo.h
+    //SYNC_TIMESTAMP = 1,
+    //END_BURST = 2,
+    //OVERWRITE_OLD = 4,
+
+    //soapyflags
+    //SOAPY_SDR_HAS_TIME = 1;
+    //SOAPY_SDR_END_BURST = 2;
+    int flagsTx = SOAPY_SDR_HAS_TIME;
+    d_timeNs = (d_time_now_tx+d_wait_tx)*1E9;
+    d_timeoutUs = (total_num_samps/(float)d_samp_rate+d_timeout_tx))*1E6;
+
+    num_tx_samps = d_soapysdr_tx->writeStream(d_tx_stream, d_in_send, total_num_samps, flagsTx, d_timeNs, d_timeoutUs);
+
+    // Get timeout
 		if (num_tx_samps < total_num_samps) std::cerr << "Send timeout..." << std::endl;
 
 		//send a mini EOB packet
-		d_metadata_tx.start_of_burst = false;
-		d_metadata_tx.end_of_burst = true;
-		d_metadata_tx.has_time_spec = false;
-		d_tx_stream->send("", 0, d_metadata_tx);
-    }
+		int flagsTx = SOAPY_SDR_END_BURST;
+    d_soapysdr_tx->writeStream(d_tx_stream, 0, 0, flagsTx);
+    //d_soapysdr_tx->writeStream(d_tx_stream, 0, 0, flags, timeNs, timeoutUs);
+		//d_tx_stream->send("", 0, d_metadata_tx);
+  }
 
-    void
-    soapysdr_echotimer_impl::receive()
-    {
+  void
+  soapysdr_echotimer_impl::receive()
+  {
 		// Setup RX streaming
 		size_t total_num_samps = d_noutput_items_recv;
 		uhd::stream_cmd_t stream_cmd(uhd::stream_cmd_t::STREAM_MODE_NUM_SAMPS_AND_DONE);
@@ -223,20 +285,31 @@ namespace gr {
 
 		size_t num_rx_samps;
 		// Receive a packet
-		num_rx_samps = d_rx_stream->recv(d_out_recv, total_num_samps, d_metadata_rx, total_num_samps/(float)d_samp_rate+d_timeout_rx);
+    //virtual int readStream(
+    //    Stream *stream,
+    //    void * const *buffs,
+    //    const size_t numElems,
+    //    int &flags,
+    //    long long &timeNs,
+    //    const long timeoutUs = 100000);
+
+    int flagsRx;
+    d_timeNs = (d_time_now_tx+d_wait_tx)*1E9;
+    d_timeoutUs = (total_num_samps/(float)d_samp_rate+d_timeout_tx))*1E6;
+    num_rx_samps = d_soapysdr_rx->readStream(d_rx_stream, d_out_recv, total_num_samps, flagsRx, d_timeNs, d_timeoutUs);
 
 		// Save timestamp
 		d_time_val = pmt::make_tuple
-			(pmt::from_uint64(d_metadata_rx.time_spec.get_full_secs()),
-			 pmt::from_double(d_metadata_rx.time_spec.get_frac_secs()));
+			(pmt::from_uint64(d_timeNs/1E9));
 
 		// Handle the error code
-		if (d_metadata_rx.error_code != uhd::rx_metadata_t::ERROR_CODE_NONE){
-			throw std::runtime_error(str(boost::format("Receiver error %s") % d_metadata_rx.strerror()));
-		}
+		//if (d_metadata_rx.error_code != uhd::rx_metadata_t::ERROR_CODE_NONE){
+		//	throw std::runtime_error(str(boost::format("Receiver error %s") % d_metadata_rx.strerror()));
+		//}
 
 		if (num_rx_samps < total_num_samps) std::cerr << "Receive timeout before all samples received..." << std::endl;
-    }
+
+  }
 
     // Where the work is done
     int
@@ -255,7 +328,7 @@ namespace gr {
       if(d_out_buffer.size()!=noutput_items) d_out_buffer.resize(noutput_items);
 
       // Get time from USRP TX
-      d_time_now_tx = d_usrp_tx->get_time_now();
+      d_time_now_tx = d_soapysdr_tx->get_time_now();
       d_time_now_rx = d_time_now_tx;
 
       // Send thread

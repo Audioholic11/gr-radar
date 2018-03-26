@@ -1,38 +1,130 @@
-<?xml version="1.0"?>
 <block>
-  <name>soapysdr_echotimer</name>
+  <name>Soapysdr echotimer</name>
   <key>radar_soapysdr_echotimer</key>
-  <category>[radar]</category>
+  <category>[RADAR]</category>
   <import>import radar</import>
   <make>radar.soapysdr_echotimer($samp_rate, $center_freq, $num_delay_samps, $args_tx, $wire_tx, $clock_source_tx, $time_source_tx, $antenna_tx, $gain_tx, $timeout_tx, $wait_tx, $lo_offset_tx, $args_rx, $wire_rx, $clock_source_rx, $time_source_rx, $antenna_rx, $gain_rx, $timeout_rx, $wait_rx, $lo_offset_rx, $len_key)</make>
-  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
-       Sub-nodes:
-       * name
-       * key (makes the value accessible as $keyname, e.g. in the make node)
-       * type -->
   <param>
-    <name>...</name>
-    <key>...</key>
-    <type>...</type>
+    <name>Samp_rate</name>
+    <key>samp_rate</key>
+    <type>int</type>
   </param>
-
-  <!-- Make one 'sink' node per input. Sub-nodes:
-       * name (an identifier for the GUI)
-       * type
-       * vlen
-       * optional (set to 1 for optional inputs) -->
+  <param>
+    <name>Center_freq</name>
+    <key>center_freq</key>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Num_delay_samps</name>
+    <key>num_delay_samps</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Args_tx</name>
+    <key>args_tx</key>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Wire_tx</name>
+    <key>wire_tx</key>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Clock_source_tx</name>
+    <key>clock_source_tx</key>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Time_source_tx</name>
+    <key>time_source_tx</key>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Antenna_tx</name>
+    <key>antenna_tx</key>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Gain_tx</name>
+    <key>gain_tx</key>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Timeout_tx</name>
+    <key>timeout_tx</key>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Wait_tx</name>
+    <key>wait_tx</key>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Lo_offset_tx</name>
+    <key>lo_offset_tx</key>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Args_rx</name>
+    <key>args_rx</key>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Wire_rx</name>
+    <key>wire_rx</key>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Clock_source_rx</name>
+    <key>clock_source_rx</key>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Time_source_rx</name>
+    <key>time_source_rx</key>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Antenna_rx</name>
+    <key>antenna_rx</key>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Gain_rx</name>
+    <key>gain_rx</key>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Timeout_rx</name>
+    <key>timeout_rx</key>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Wait_rx</name>
+    <key>wait_rx</key>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Lo_offset_rx</name>
+    <key>lo_offset_rx</key>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Len_key</name>
+    <key>len_key</key>
+    <type>string</type>
+  </param>
   <sink>
     <name>in</name>
-    <type><!-- e.g. int, float, complex, byte, short, xxx_vector, ...--></type>
+    <type>byte</type>
   </sink>
-
-  <!-- Make one 'source' node per output. Sub-nodes:
-       * name (an identifier for the GUI)
-       * type
-       * vlen
-       * optional (set to 1 for optional inputs) -->
   <source>
     <name>out</name>
-    <type><!-- e.g. int, float, complex, byte, short, xxx_vector, ...--></type>
+    <type>complex</type>
+  </source>
+  <source>
+    <name>out</name>
+    <type>byte</type>
+    <vlen>$ len_key</vlen>
   </source>
 </block>

@@ -70,13 +70,14 @@ soapy_source_c::soapy_source_c (const std::string &args)
     _nchan = std::max(1, args_to_io_signature(args)->max_streams());
     std::vector<size_t> channels;
     for (size_t i = 0; i < _nchan; i++) channels.push_back(i);
-    _stream = _device->setupStream(SOAPY_SDR_RX, "CF32", channels);
+    _stream = _device->setupStream(SOAPY_SDR_RX, "CF32",
+  );
 }
 
 soapy_source_c::~soapy_source_c(void)
 {
     _device->closeStream(_stream);
-    boost::mutex::scoped_lock l(get_soapy_maker_mutex());
+    boost::mutex::scoped_lock (get_soapy_maker_mutex());
     SoapySDR::Device::unmake(_device);
 }
 
@@ -324,7 +325,7 @@ double soapy_source_c::set_bandwidth( double bandwidth, size_t chan )
     return this->get_bandwidth(chan);
 }
 
-double soapy_source_c::get_bandwidth( size_t chan ) 
+double soapy_source_c::get_bandwidth( size_t chan )
 {
     return _device->getBandwidth(SOAPY_SDR_RX, chan);
 }
