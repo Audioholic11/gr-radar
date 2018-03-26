@@ -22,109 +22,123 @@
   <param>
     <name>Args_tx</name>
     <key>args_tx</key>
+    <value>"device args"</value>
     <type>string</type>
   </param>
   <param>
     <name>Wire_tx</name>
     <key>wire_tx</key>
+    <value>"N/A"</value>
     <type>string</type>
   </param>
   <param>
     <name>Clock_source_tx</name>
     <key>clock_source_tx</key>
+    <value>""</value>
     <type>string</type>
   </param>
   <param>
     <name>Time_source_tx</name>
     <key>time_source_tx</key>
+    <value>""</value>
     <type>string</type>
   </param>
   <param>
     <name>Antenna_tx</name>
     <key>antenna_tx</key>
+    <value>"BAND2"</value>
     <type>string</type>
   </param>
   <param>
     <name>Gain_tx</name>
     <key>gain_tx</key>
+    <value>0</value>
     <type>float</type>
   </param>
   <param>
     <name>Timeout_tx</name>
     <key>timeout_tx</key>
+    <value>.1</value>
     <type>float</type>
   </param>
   <param>
     <name>Wait_tx</name>
     <key>wait_tx</key>
+    <value>.001</value>
     <type>float</type>
   </param>
   <param>
     <name>Lo_offset_tx</name>
     <key>lo_offset_tx</key>
+    <value>0</value>
     <type>float</type>
   </param>
   <param>
     <name>Args_rx</name>
     <key>args_rx</key>
+    <value>"device args"</value>
     <type>string</type>
   </param>
   <param>
     <name>Wire_rx</name>
     <key>wire_rx</key>
+    <value>"N/A"</value>
     <type>string</type>
   </param>
   <param>
     <name>Clock_source_rx</name>
     <key>clock_source_rx</key>
+    <value>""</value>
     <type>string</type>
   </param>
   <param>
     <name>Time_source_rx</name>
     <key>time_source_rx</key>
+    <value>""</value>
     <type>string</type>
   </param>
   <param>
     <name>Antenna_rx</name>
     <key>antenna_rx</key>
+    <value>"LNAH"</value>
     <type>string</type>
   </param>
   <param>
     <name>Gain_rx</name>
     <key>gain_rx</key>
+    <value>0</value>
     <type>float</type>
   </param>
   <param>
     <name>Timeout_rx</name>
     <key>timeout_rx</key>
+    <value>.1</value>
     <type>float</type>
   </param>
   <param>
     <name>Wait_rx</name>
     <key>wait_rx</key>
+    <value>.001</value>
     <type>float</type>
   </param>
   <param>
     <name>Lo_offset_rx</name>
     <key>lo_offset_rx</key>
+    <value>0</value>
     <type>float</type>
   </param>
   <param>
     <name>Len_key</name>
     <key>len_key</key>
+    <value>"packet_len"</value>
     <type>string</type>
   </param>
   <sink>
     <name>in</name>
-    <type>byte</type>
+    <type>complex</type>
   </sink>
   <source>
     <name>out</name>
     <type>complex</type>
-  </source>
-  <source>
-    <name>out</name>
-    <type>byte</type>
-    <vlen>$ len_key</vlen>
   </source>
 </block>

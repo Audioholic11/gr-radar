@@ -47,7 +47,14 @@ namespace gr {
        * class. radar::soapysdr_echotimer::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int samp_rate, float center_freq, int num_delay_samps, std::string args_tx, std::string wire_tx, std::string clock_source_tx, std::string time_source_tx, std::string antenna_tx, float gain_tx, float timeout_tx, float wait_tx, float lo_offset_tx, std::string args_rx, std::string wire_rx, std::string clock_source_rx, std::string time_source_rx, std::string antenna_rx, float gain_rx, float timeout_rx, float wait_rx, float lo_offset_rx, const std::string& len_key="packet_len");
+      static sptr make(int samp_rate, float center_freq, int num_delay_samps,
+        std::string args_tx="device args", std::string wire_tx="N/A", std::string clock_source_tx="",
+        std::string time_source_tx="", std::string antenna_tx="BAND2", float gain_tx=0,
+        float timeout_tx=.1, float wait_tx=.001, float lo_offset_tx=0,
+        std::string args_rx="device args", std::string wire_rx="N/A", std::string clock_source_rx="",
+        std::string time_source_rx="", std::string antenna_rx="LNAH", float gain_rx=0,
+        float timeout_rx=.1, float wait_rx=.001, float lo_offset_rx=0,
+        const std::string& len_key="packet_len");
 
       virtual void set_num_delay_samps(int num_samps) = 0;
   	  virtual void set_rx_gain(size_t chan, float gain) = 0;

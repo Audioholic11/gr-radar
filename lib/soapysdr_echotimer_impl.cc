@@ -287,11 +287,6 @@ namespace gr {
     {
       // Setup RX streaming
       size_t total_num_samps = d_noutput_items_recv;
-      //uhd::stream_cmd_t stream_cmd(uhd::stream_cmd_t::STREAM_MODE_NUM_SAMPS_AND_DONE);
-      //stream_cmd.num_samps = total_num_samps;
-      //stream_cmd.stream_now = false;
-      //stream_cmd.time_spec = d_time_now_rx+uhd::time_spec_t(d_wait_rx);
-      //d_rx_stream->issue_stream_cmd(stream_cmd);
 
       size_t num_rx_samps;
       // Receive a packet
@@ -304,8 +299,8 @@ namespace gr {
       //    const long timeoutUs = 100000);
 
 
-      d_timeNs = (d_time_now_tx+d_wait_tx)*1E9;
-      d_timeoutUs = (total_num_samps/(float)d_samp_rate+d_timeout_tx)*1E6;
+      d_timeNs = (d_time_now_rx+d_wait_rx)*1E9;
+      d_timeoutUs = (total_num_samps/(float)d_samp_rate+d_timeout_rx)*1E6;
       num_rx_samps = d_soapysdr_rx->readStream(d_rx_stream, &d_out_recv[0], total_num_samps, flagsRx, d_timeNs, d_timeoutUs);
 
       // Save timestamp
