@@ -96,12 +96,17 @@ install(TARGETS gnuradio-radar
     RUNTIME DESTINATION bin              # .dll file
 )
 
+
 ########################################################################
 # Build and register unit test
 ########################################################################
 include(GrTest)
 
-include_directories(${CPPUNIT_INCLUDE_DIRS})
+include_directories(
+${CPPUNIT_INCLUDE_DIRS}
+#${SOAPY_SDR_INCLUDE_DIR}
+)
+
 
 list(APPEND test_radar_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_radar.cc

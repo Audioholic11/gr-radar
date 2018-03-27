@@ -24,9 +24,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "soapysdr_echotimer_impl.h"
-
 #include <iostream>
-#include <algorithm>
 
 namespace gr {
   namespace radar {
@@ -68,21 +66,7 @@ namespace gr {
         d_timeNs = 0;
         d_timeoutUs = 0;
 
-        /*enum StreamFlags
-        {
-        SYNC_TIMESTAMP = 1,
-        END_BURST = 2,
-        OVERWRITE_OLD = 4,
-      };*/
-
-      //useful
-      //_device = SoapySDR::Device::make(params_to_dict(args));
-      //_stream = _device->setupStream(SOAPY_SDR_TX, "CF32", channels);
-      //_device->activateStream(_stream)
-      //_device->deactivateStream(_stream)
-      //SoapySDR::Kwargs kw, SoapySDR::Device::enumerate()
-      //ret = _device->writeStream( _stream, &input_items[0], noutput_items, flags, timeNs);
-
+      
       //***** Setup Soapy / gr-osmosdr TX *****//
       d_args_tx = args_tx;
       d_wire_tx = wire_tx;
