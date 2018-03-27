@@ -131,7 +131,7 @@ find_package(FFTW3F)
 find_package(Qt4 4.2.0 COMPONENTS QtCore QtGui)
 find_package(Qwt 6.0.0)
 find_package(UHD)
-find_package(SoapySDR)
+#find_package(SoapySDR)
 
 # Search for GNU Radio and its components and versions. Add any
 # components required to the list of GR_REQUIRED_COMPONENTS (in all
