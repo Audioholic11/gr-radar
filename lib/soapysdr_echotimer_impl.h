@@ -36,6 +36,8 @@
 //#include "soapy_common.h"
 //#include "arg_helpers.h"
 //#include "source_iface.h"
+//#include "arg_helpers.h"
+
 
 //boost
 #include <boost/shared_ptr.hpp>
@@ -73,6 +75,7 @@ namespace gr {
     private:
       //variables
       //common
+      SoapySDR::Kwargs d_kw;
       int d_samp_rate;
       float d_center_freq;
       int d_num_delay_samps;

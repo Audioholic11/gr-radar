@@ -24,6 +24,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "soapysdr_echotimer_impl.h"
+
 #include <iostream>
 
 namespace gr {
@@ -66,7 +67,7 @@ namespace gr {
         d_timeNs = 0;
         d_timeoutUs = 0;
 
-      
+
       //***** Setup Soapy / gr-osmosdr TX *****//
       d_args_tx = args_tx;
       d_wire_tx = wire_tx;
@@ -79,8 +80,11 @@ namespace gr {
       d_wait_tx = wait_tx; // secs to wait befor sending
       d_chan_tx = 0;
 
+      //d_kw = SoapySDR::Device::enumerate();
+      d_kw = KwargsFromString(d_args_tx);
       // Setup Soapysdr TX: args (addr,...)
-      d_soapysdr_tx = SoapySDR::Device::make(d_args_tx);
+      //d_soapysdr_tx = SoapySDR::Device::make(params_to_dict(d_args_tx));
+      d_soapysdr_tx = SoapySDR::Device::make(d_kw);
       std::cout << "Using Soapy Device (TX): " << std::endl << d_soapysdr_tx->getHardwareKey() << std::endl;
 
       // Setup Soapysdr TX: sample rate
@@ -136,8 +140,9 @@ namespace gr {
       d_wait_rx = wait_rx; // secs to wait befor receiving
       d_chan_rx = 0;
 
+      d_kw = KwargsFromString(d_args_rx);
       // Setup USRP RX: args (addr,...)
-      d_soapysdr_rx = SoapySDR::Device::make(d_args_rx);
+      d_soapysdr_rx = SoapySDR::Device::make(d_kw);
       std::cout << "Using Soapy Device (TX): " << std::endl << d_soapysdr_rx->getHardwareKey() << std::endl;
 
       // Setup USRP RX: sample rate
@@ -215,21 +220,20 @@ namespace gr {
     soapysdr_echotimer_impl::set_rx_gain( size_t chan, float gain)
     {
       //setGain(const int direction, const size_t channel, const double value);
-      d_soapysdr_tx->setGain(SOAPY_SDR_RX, d_chan_rx, gain);
+      d_soapysdr_tx->setGain(SOAPY_SDR_RX, chan, gain);
     }
 
     void
     soapysdr_echotimer_impl::set_tx_gain( size_t chan, float gain)
     {
       //setGain(const int direction, const size_t channel, const double value);
-      d_soapysdr_tx->setGain(SOAPY_SDR_TX, d_chan_tx, gain);
+      d_soapysdr_tx->setGain(SOAPY_SDR_TX, chan, gain);
     }
 
     void
     soapysdr_echotimer_impl::send()
     {
       // Send input buffer
-      size_t num_acc_samps = 0; // Number of accumulated samples
       size_t num_tx_samps, total_num_samps;
       total_num_samps = d_noutput_items_send;
       //Data to Soapy _device
@@ -263,7 +267,6 @@ namespace gr {
       int flagsTx = SOAPY_SDR_END_BURST;
       d_soapysdr_tx->writeStream(d_tx_stream, 0, 0, flagsTx);
       //d_soapysdr_tx->writeStream(d_tx_stream, 0, 0, flags, timeNs, timeoutUs);
-      //d_tx_stream->send("", 0, d_metadata_tx);
     }
 
     void
