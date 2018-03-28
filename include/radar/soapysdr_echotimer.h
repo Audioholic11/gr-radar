@@ -48,11 +48,9 @@ namespace gr {
        * creating new instances.
        */
       static sptr make(int samp_rate, float center_freq, int num_delay_samps,
-        std::string args_tx="device args", std::string wire_tx="N/A", std::string clock_source_tx="",
-        std::string time_source_tx="", std::string antenna_tx="BAND2", float gain_tx=0,
+        std::string args="device args", std::string antenna_tx="BAND2", float gain_tx=0,
         float timeout_tx=.1, float wait_tx=.001, float lo_offset_tx=0,
-        std::string args_rx="device args", std::string wire_rx="N/A", std::string clock_source_rx="",
-        std::string time_source_rx="", std::string antenna_rx="LNAH", float gain_rx=0,
+        std::string antenna_rx="LNAH", float gain_rx=0,
         float timeout_rx=.1, float wait_rx=.001, float lo_offset_rx=0,
         const std::string& len_key="packet_len");
 

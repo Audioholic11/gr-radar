@@ -78,23 +78,20 @@ namespace gr {
       SoapySDR::Kwargs d_kw;
       int d_samp_rate;
       float d_center_freq;
+      std::string d_args;
       int d_num_delay_samps;
       long long d_timeNs;
       long d_timeoutUs;
       pmt::pmt_t d_time_key, d_time_val, d_srcid;
 
       // Tx/Rx
-      SoapySDR::Device *d_soapysdr_tx, *d_soapysdr_rx;
+      SoapySDR::Device *d_soapysdr_tx, *d_soapysdr_rx, *d_soapysdr;
       SoapySDR::Stream *d_tx_stream, *d_rx_stream;
 
       size_t d_chan_tx, d_chan_rx;
       int flagsTx, flagsRx;
 
-      std::string d_args_tx, d_args_rx;
-      std::string d_clock_source_tx, d_clock_source_rx;
-      std::string d_wire_tx, d_wire_rx;
       std::string d_antenna_tx, d_antenna_rx;
-      std::string d_time_source_tx, d_time_source_rx;
 
       double d_lo_offset_tx, d_lo_offset_rx;
       float d_timeout_tx, d_timeout_rx;
@@ -118,11 +115,11 @@ namespace gr {
     public:
 
         soapysdr_echotimer_impl(int samp_rate, float center_freq, int num_delay_samps,
-        std::string args_tx, std::string wire_tx, std::string clock_source_tx, std::string time_source_tx,
-        std::string antenna_tx, float gain_tx, float timeout_tx, float wait_tx, float lo_offset_tx,
-        std::string args_rx, std::string wire_rx, std::string clock_source_rx, std::string time_source_rx,
-        std::string antenna_rx, float gain_rx, float timeout_rx, float wait_rx, float lo_offset_rx,
-        const std::string& len_key);
+          std::string args, std::string antenna_tx, float gain_tx,
+          float timeout_tx, float wait_tx, float lo_offset_tx,
+          std::string antenna_rx, float gain_rx,
+          float timeout_rx, float wait_rx, float lo_offset_rx,
+          const std::string& len_key);
 
         ~soapysdr_echotimer_impl();
 

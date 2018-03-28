@@ -17,36 +17,36 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 install(FILES
-    radar_signal_generator_cw_c.xml
-    radar_signal_generator_fmcw_c.xml
-    radar_split_cc.xml
+    #radar_signal_generator_cw_c.xml
+    #radar_signal_generator_fmcw_c.xml
+    #radar_split_cc.xml
     radar_os_cfar_c.xml
-    radar_ts_fft_cc.xml
-    radar_estimator_cw.xml
+    #radar_ts_fft_cc.xml
+    #radar_estimator_cw.xml
     radar_print_results.xml
-    radar_static_target_simulator_cc.xml
-    radar_signal_generator_fsk_c.xml
-    radar_split_fsk_cc.xml
-    radar_estimator_fsk.xml
-    radar_usrp_echotimer_cc.xml
-    radar_estimator_fmcw.xml
+    #radar_static_target_simulator_cc.xml
+    #radar_signal_generator_fsk_c.xml
+    #radar_split_fsk_cc.xml
+    #radar_estimator_fsk.xml
+    #radar_usrp_echotimer_cc.xml
+    #radar_estimator_fmcw.xml
     radar_signal_generator_sync_pulse_c.xml
-    radar_estimator_sync_pulse_c.xml
-    radar_find_max_peak_c.xml
+    #radar_estimator_sync_pulse_c.xml
+    #radar_find_max_peak_c.xml
     radar_qtgui_scatter_plot.xml
-    radar_qtgui_time_plot.xml
-    radar_tracking_singletarget.xml
+    #radar_qtgui_time_plot.xml
+    #radar_tracking_singletarget.xml
     radar_msg_gate.xml
     radar_msg_manipulator.xml
-    radar_ofdm_cyclic_prefix_remover_cvc.xml
+    #radar_ofdm_cyclic_prefix_remover_cvc.xml
     radar_transpose_matrix_vcvc.xml
-    radar_qtgui_spectrogram_plot.xml
-    radar_crop_matrix_vcvc.xml
+    #radar_qtgui_spectrogram_plot.xml
+    #radar_crop_matrix_vcvc.xml
     radar_ofdm_divide_vcvc.xml
-    radar_os_cfar_2d_vc.xml
-    radar_estimator_ofdm.xml
-    radar_estimator_rcs.xml
-    radar_trigger_command.xml
+    #radar_os_cfar_2d_vc.xml
+    #radar_estimator_ofdm.xml
+    #radar_estimator_rcs.xml
+    #radar_trigger_command.xml
     radar_soapysdr_echotimer.xml
     DESTINATION share/gnuradio/grc/blocks
 )
