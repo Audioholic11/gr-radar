@@ -31,8 +31,12 @@ QT4_WRAP_CPP(QTGUI_MOC_OUTFILES ${QTGUI_MOC_HEADERS})
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
 
+
 include_directories(${Boost_INCLUDE_DIR})
+
+
 link_directories(${Boost_LIBRARY_DIRS})
+
 list(APPEND radar_sources
 	${QTGUI_MOC_OUTFILES}
 	scatter_plot.cc
@@ -77,8 +81,19 @@ if(NOT radar_sources)
 	return()
 endif(NOT radar_sources)
 
+#message(STATUS "library check radar sources: " ${radar_sources})
+
 add_library(gnuradio-radar SHARED ${radar_sources})
-target_link_libraries(gnuradio-radar ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES} ${FFTW3F_LIBRARIES} ${QWT_LIBRARIES} ${QT_LIBRARIES} ${UHD_LIBRARIES})
+target_link_libraries(gnuradio-radar
+									${Boost_LIBRARIES}
+									${GNURADIO_ALL_LIBRARIES}
+									${FFTW3F_LIBRARIES}
+									${QWT_LIBRARIES}
+									${QT_LIBRARIES}
+									${UHD_LIBRARIES}
+									${SOAPY_SDR_LIBRARY}
+									${VOLK_LIBRARIES}
+									)
 set_target_properties(gnuradio-radar PROPERTIES DEFINE_SYMBOL "gnuradio_radar_EXPORTS")
 
 if(APPLE)
@@ -90,6 +105,7 @@ endif(APPLE)
 ########################################################################
 # Install built library files
 ########################################################################
+
 install(TARGETS gnuradio-radar
     LIBRARY DESTINATION lib${LIB_SUFFIX} # .so/.dylib file
     ARCHIVE DESTINATION lib${LIB_SUFFIX} # .lib file
@@ -104,7 +120,6 @@ include(GrTest)
 
 include_directories(
 ${CPPUNIT_INCLUDE_DIRS}
-#${SOAPY_SDR_INCLUDE_DIR}
 )
 
 
@@ -124,6 +139,8 @@ target_link_libraries(
   ${QWT_LIBRARIES}
   ${QT_LIBRARIES}
   ${UHD_LIBRARY_DIRS}
+	#${SOAPY_SDR_LIBRARY}
+	#${VOLK_LIBRARIES}
   gnuradio-radar
 )
 

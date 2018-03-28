@@ -18,12 +18,15 @@
 # Boston, MA 02110-1301, USA.
 
 
+message(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
+
 ########################################################################
 # Project setup
 ########################################################################
 cmake_minimum_required(VERSION 2.8)
 project(gr-radar CXX C)
 enable_testing()
+message(STATUS "CMAKE_PROJECT_NAME: " ${CMAKE_PROJECT_NAME})
 
 #select the release build type by default to get optimization flags
 if(NOT CMAKE_BUILD_TYPE)
@@ -56,6 +59,7 @@ if(POLICY CMP0046)
     cmake_policy(SET CMP0046 OLD)
 endif()
 
+message(STATUS "CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
 ########################################################################
 # Compiler specific setup
 ########################################################################
@@ -86,7 +90,7 @@ set(Boost_ADDITIONAL_VERSIONS
     "1.60.0" "1.60" "1.61.0" "1.61" "1.62.0" "1.62" "1.63.0" "1.63" "1.64.0" "1.64"
     "1.65.0" "1.65" "1.66.0" "1.66" "1.67.0" "1.67" "1.68.0" "1.68" "1.69.0" "1.69"
 )
-find_package(Boost "1.53" COMPONENTS filesystem system)
+find_package(Boost "1.53" COMPONENTS filesystem system thread)
 
 if(NOT Boost_FOUND)
     message(FATAL_ERROR "Boost required to compile radar")
@@ -96,6 +100,7 @@ endif()
 # Install directories
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
+message(STATUS "GrPlatform: " ${GrPlatform})
 set(GR_RUNTIME_DIR      bin)
 set(GR_LIBRARY_DIR      lib${LIB_SUFFIX})
 set(GR_INCLUDE_DIR      include/radar)
@@ -108,6 +113,8 @@ set(GR_PKG_CONF_DIR     ${GR_CONF_DIR}/${CMAKE_PROJECT_NAME}/conf.d)
 set(GR_LIBEXEC_DIR      libexec)
 set(GR_PKG_LIBEXEC_DIR  ${GR_LIBEXEC_DIR}/${CMAKE_PROJECT_NAME})
 set(GRC_BLOCKS_DIR      ${GR_PKG_DATA_DIR}/grc/blocks)
+
+message(STATUS "GR_LIBRARY_DIR: " ${GR_LIBRARY_DIR})
 
 ########################################################################
 # On Apple only, set install name and use rpath correctly, if not already set
@@ -138,7 +145,10 @@ find_package(FFTW3F)
 find_package(Qt4 4.2.0 COMPONENTS QtCore QtGui)
 find_package(Qwt 6.0.0)
 find_package(UHD)
-find_package(SoapySDR)
+find_package(SoapySDR CONFIG REQUIRED)
+find_package(Volk REQUIRED)
+
+
 
 # Search for GNU Radio and its components and versions. Add any
 # components required to the list of GR_REQUIRED_COMPONENTS (in all
@@ -151,6 +161,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 if(NOT CPPUNIT_FOUND)
     message(FATAL_ERROR "CppUnit required to compile blub")
 endif()
+
 
 # populate the environment with QT variables
 include(GrSetupQt4)
@@ -190,7 +201,6 @@ link_directories(
     ${QWT_LIBRARY_DIRS}
     ${QT_LIBRARY_DIRS}
     ${UHD_LIBRARY_DIRS}
-    ${SOAPY_SDR_LIBRARY}
 )
 
 # Set component parameters

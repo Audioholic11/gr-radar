@@ -81,7 +81,7 @@ namespace gr {
       d_chan_tx = 0;
 
       //d_kw = SoapySDR::Device::enumerate();
-      d_kw = KwargsFromString(d_args_tx);
+      d_kw = SoapySDR::KwargsFromString(d_args_tx);
       // Setup Soapysdr TX: args (addr,...)
       //d_soapysdr_tx = SoapySDR::Device::make(params_to_dict(d_args_tx));
       d_soapysdr_tx = SoapySDR::Device::make(d_kw);
@@ -140,7 +140,7 @@ namespace gr {
       d_wait_rx = wait_rx; // secs to wait befor receiving
       d_chan_rx = 0;
 
-      d_kw = KwargsFromString(d_args_rx);
+      d_kw = SoapySDR::KwargsFromString(d_args_rx);
       // Setup USRP RX: args (addr,...)
       d_soapysdr_rx = SoapySDR::Device::make(d_kw);
       std::cout << "Using Soapy Device (TX): " << std::endl << d_soapysdr_rx->getHardwareKey() << std::endl;
