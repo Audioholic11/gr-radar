@@ -103,7 +103,7 @@ namespace gr {
       //receive stream variables
       gr::thread::thread d_thread_recv;
       gr_vector_void_star d_out_buffer;//std::vector<gr_complex>
-      gr_vector_void_star d_out_recv;//input to "readStream"
+      gr_complex d_out_recv;//input to "readStream"
       int d_noutput_items_recv;
 
 
