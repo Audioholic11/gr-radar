@@ -43,35 +43,35 @@ list(APPEND radar_sources
 	time_plot.cc
 	spectrogram_plot.cc
     signal_generator_cw_c_impl.cc
-    #signal_generator_fmcw_c_impl.cc
-    #split_cc_impl.cc
-    #os_cfar_c_impl.cc
-    #ts_fft_cc_impl.cc
+    signal_generator_fmcw_c_impl.cc
+    split_cc_impl.cc
+    os_cfar_c_impl.cc
+    ts_fft_cc_impl.cc
     estimator_cw_impl.cc
-    #print_results_impl.cc
-    #static_target_simulator_cc_impl.cc
-    #signal_generator_fsk_c_impl.cc
-    #split_fsk_cc_impl.cc
-    #estimator_fsk_impl.cc
-    #usrp_echotimer_cc_impl.cc
-    #estimator_fmcw_impl.cc
-    #signal_generator_sync_pulse_c_impl.cc
-    #estimator_sync_pulse_c_impl.cc
-    #find_max_peak_c_impl.cc
-    #qtgui_scatter_plot_impl.cc
-    #qtgui_time_plot_impl.cc
-    #tracking_singletarget_impl.cc
-    #msg_gate_impl.cc
-    #msg_manipulator_impl.cc
-    #ofdm_cyclic_prefix_remover_cvc_impl.cc
-    #transpose_matrix_vcvc_impl.cc
-    #qtgui_spectrogram_plot_impl.cc
-    #crop_matrix_vcvc_impl.cc
-    #ofdm_divide_vcvc_impl.cc
-    #os_cfar_2d_vc_impl.cc
-    #estimator_ofdm_impl.cc
-    #estimator_rcs_impl.cc
-    #trigger_command_impl.cc
+    print_results_impl.cc
+    static_target_simulator_cc_impl.cc
+    signal_generator_fsk_c_impl.cc
+    split_fsk_cc_impl.cc
+    estimator_fsk_impl.cc
+    usrp_echotimer_cc_impl.cc
+    estimator_fmcw_impl.cc
+    signal_generator_sync_pulse_c_impl.cc
+    estimator_sync_pulse_c_impl.cc
+    find_max_peak_c_impl.cc
+    qtgui_scatter_plot_impl.cc
+    qtgui_time_plot_impl.cc
+    tracking_singletarget_impl.cc
+    msg_gate_impl.cc
+    msg_manipulator_impl.cc
+    ofdm_cyclic_prefix_remover_cvc_impl.cc
+    transpose_matrix_vcvc_impl.cc
+    qtgui_spectrogram_plot_impl.cc
+    crop_matrix_vcvc_impl.cc
+    ofdm_divide_vcvc_impl.cc
+    os_cfar_2d_vc_impl.cc
+    estimator_ofdm_impl.cc
+    estimator_rcs_impl.cc
+    trigger_command_impl.cc
     soapysdr_echotimer_impl.cc
     )
 

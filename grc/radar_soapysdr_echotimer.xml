@@ -1,9 +1,13 @@
 <block>
   <name>Soapysdr echotimer</name>
   <key>radar_soapysdr_echotimer</key>
-  <category>[RADAR]</category>
+  <category>[RADAR]/RADAR</category>
   <import>import radar</import>
-  <make>radar.soapysdr_echotimer($samp_rate, $center_freq, $num_delay_samps, $args, $antenna_tx, $gain_tx, $timeout_tx, $wait_tx, $lo_offset_tx, $antenna_rx, $gain_rx, $timeout_rx, $wait_rx, $lo_offset_rx, $len_key)</make>
+  <make>radar.soapysdr_echotimer($samp_rate, $center_freq, $num_delay_samps, $args, $antenna_tx, $gain_tx, $bw_tx, $timeout_tx, $wait_tx, $lo_offset_tx, $antenna_rx, $gain_rx, $bw_rx, $timeout_rx, $wait_rx, $lo_offset_rx, $len_key)</make>
+  <callback>set_num_delay_samps($num_delay_samps)</callback>
+  <callback>set_tx_gain(0,$gain_tx)</callback>
+  <callback>set_rx_gain(0,$gain_rx)</callback>
+  <callback>set_wait($wait_rx,$wait_tx)</callback>
   <param>
     <name>Samp_rate</name>
     <key>samp_rate</key>
@@ -38,6 +42,12 @@
     <type>float</type>
   </param>
   <param>
+    <name>Bw_tx</name>
+    <key>bw_tx</key>
+    <value>0</value>
+    <type>float</type>
+  </param>
+  <param>
     <name>Timeout_tx</name>
     <key>timeout_tx</key>
     <value>.1</value>
@@ -64,6 +74,12 @@
   <param>
     <name>Gain_rx</name>
     <key>gain_rx</key>
+    <value>0</value>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Bw_rx</name>
+    <key>bw_rx</key>
     <value>0</value>
     <type>float</type>
   </param>

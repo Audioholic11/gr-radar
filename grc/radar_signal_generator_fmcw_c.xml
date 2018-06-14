@@ -3,10 +3,15 @@
   <key>radar_signal_generator_fmcw_c</key>
   <category>[RADAR]/Generators</category>
   <import>import radar</import>
-  <make>radar.signal_generator_fmcw_c($samp_rate, $samp_up, $samp_down, $samp_cw, $freq_cw, $freq_sweep, $amplitude, $len_key)</make>
+  <make>radar.signal_generator_fmcw_c($samp_rate,$packet_len ,$samp_up, $samp_up_hold, $samp_down, $samp_down_hold, $samp_cw, $samp_dead, $freq_cw, $freq_sweep, $amplitude, $len_key, $chirp_len_key)</make>
   <param>
     <name>Sample rate</name>
     <key>samp_rate</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Packet Length</name>
+    <key>packet_len</key>
     <type>int</type>
   </param>
   <param>
@@ -20,8 +25,23 @@
     <type>int</type>
   </param>
   <param>
+    <name>Samples up-chirp hold</name>
+    <key>samp_up_hold</key>
+    <type>int</type>
+  </param>
+  <param>
     <name>Samples down-chirp</name>
     <key>samp_down</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Samples down-chirp hold</name>
+    <key>samp_down_hold</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Dead Samples</name>
+    <key>samp_dead</key>
     <type>int</type>
   </param>
   <param>
@@ -43,6 +63,12 @@
     <name>Packet length key</name>
     <key>len_key</key>
     <value>"packet_len"</value>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Chirp length key</name>
+    <key>chirp_len_key</key>
+    <value>"chirp_len"</value>
     <type>string</type>
   </param>
   <source>

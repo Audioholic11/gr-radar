@@ -61,7 +61,6 @@
 //#include <gnuradio/sync_block.h>
 
 
-
 namespace gr {
   namespace radar {
 
@@ -74,52 +73,75 @@ namespace gr {
 
     private:
       //variables
-      //common
-      SoapySDR::Kwargs d_kw;
-      int d_samp_rate;
-      float d_center_freq;
-      std::string d_args;
-      int d_num_delay_samps;
-      long long d_timeNs;
-      long d_timeoutUs;
-      pmt::pmt_t d_time_key, d_time_val, d_srcid;
-
-      // Tx/Rx
-      SoapySDR::Device *d_soapysdr_tx, *d_soapysdr_rx, *d_soapysdr;
-      SoapySDR::Stream *d_tx_stream, *d_rx_stream;
-
-      size_t d_chan_tx, d_chan_rx;
-      int flagsTx, flagsRx;
-
-      std::string d_antenna_tx, d_antenna_rx;
-
-      double d_lo_offset_tx, d_lo_offset_rx;
-      float d_timeout_tx, d_timeout_rx;
-      float d_wait_tx, d_wait_rx;
-      float d_gain_tx, d_gain_rx;
-
-      long long d_time_now_tx, d_time_now_rx;
-
-      //receive stream variables
-      gr::thread::thread d_thread_recv;
-      gr_vector_void_star d_out_buffer;//std::vector<gr_complex>
-      gr_complex d_out_recv;//input to "readStream"
-      int d_noutput_items_recv;
+        //timing
+        volatile long long d_time_now_tx, d_time_now_rx,d_time_now_rx_HW;
+        long long d_timeNs_tx, d_timeNs_rx;
+        long long d_timeNs_rx_return;
+        volatile long long d_wait_rx_TEST;
+        long d_timeoutUs;
+        pmt::pmt_t d_time_key, d_time_val, d_srcid;
+        //EchoParameters
+        int d_num_delay_samps;
+        //common
+        std::string d_args;
+        SoapySDR::Kwargs d_kw;
+        int d_samp_rate;
+        float d_center_freq;
+        //Aux
+        std::vector<std::string> d_listRegInterfaces;
+        std::vector<std::string> d_GPIOBanks;
+        volatile unsigned d_register;
+        volatile unsigned d_value;
+        volatile float d_time_packet;
+        long long d_extra_work_time;
+        int d_workNum;
+        bool d_SendPacket;
+        pmt::pmt_t DeadtimeKey = pmt::string_to_symbol("Deadtime");
+        volatile int firstPacket_Rx;
+        volatile int firstPacket;
+        int ERRORS;
+        int Rx_Skip_Packets = 0;
+        bool Chirp_Sync;
 
 
-      //send stream variables
-      gr::thread::thread d_thread_send;
-      gr_vector_const_void_star d_in_send;//input to "writeStream"
-      int d_noutput_items_send;
+
+        // Tx/Rx
+        SoapySDR::Device *d_soapysdr_tx, *d_soapysdr_rx, *d_soapysdr;
+        SoapySDR::Stream *d_tx_stream, *d_rx_stream;
+
+        size_t d_chan_tx, d_chan_rx;
+        int d_flagsTx, d_flagsRx,d_flagsRx_return;
+
+        float d_timeout_tx, d_timeout_rx;
+        float d_wait_tx, d_wait_rx;
+        double d_lo_offset_tx, d_lo_offset_rx;
+        std::string d_antenna_tx, d_antenna_rx;
+        float d_gain_tx, d_gain_rx;
+        float d_bw_tx, d_bw_rx;
+
+        volatile int d_num_rx_samps, d_num_tx_samps;
+
+        //receive stream variables
+        gr::thread::thread d_thread_recv;
+        gr_vector_void_star d_out_buffer;//std::vector<gr_complex>
+        //std::vector<gr_complex *> d_out_buffer;
+        gr_complex *  d_out_recv;//input to "readStream"
+        int d_noutput_items_recv;
+
+        //send stream variables
+        gr::thread::thread d_thread_send;
+        gr_vector_const_void_star d_in_buffer;//input to "writeStream"
+        int d_noutput_items_send;
 
     public:
 
         soapysdr_echotimer_impl(int samp_rate, float center_freq, int num_delay_samps,
-          std::string args, std::string antenna_tx, float gain_tx,
-          float timeout_tx, float wait_tx, float lo_offset_tx,
-          std::string antenna_rx, float gain_rx,
-          float timeout_rx, float wait_rx, float lo_offset_rx,
-          const std::string& len_key);
+                                  std::string args,
+                                  std::string antenna_tx, float gain_tx, float bw_tx,
+                                  float timeout_tx, float wait_tx, float lo_offset_tx,
+                                  std::string antenna_rx, float gain_rx, float bw_rx,
+                                  float timeout_rx, float wait_rx, float lo_offset_rx,
+                                  const std::string& len_key);
 
         ~soapysdr_echotimer_impl();
 
@@ -127,10 +149,19 @@ namespace gr {
         // methods
         void send();
         void receive();
-        void set_num_delay_samps(int num_samps);
+        //
         void set_rx_gain(size_t chan, float gain);
         void set_tx_gain(size_t chan, float gain);
 
+        //variable set and gets
+        int num_delay_samps() { return d_num_delay_samps; }
+        void set_num_delay_samps(int num_delay_samps) { d_num_delay_samps = num_delay_samps; }
+
+        float wait_rx() { return d_wait_rx; }
+        float wait_tx() { return d_wait_tx; }
+        void set_wait(float wait_rx, float wait_tx) { d_wait_rx = wait_rx; d_wait_tx = wait_tx; }
+
+        //int calculate_output_stream_length(const gr_vector_int &ninput_items);
 
         // Where all the action really happens
         int work(int noutput_items,

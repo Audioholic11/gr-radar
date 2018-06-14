@@ -48,13 +48,23 @@ namespace gr {
        * creating new instances.
        */
       static sptr make(int samp_rate, float center_freq, int num_delay_samps,
-        std::string args="device args", std::string antenna_tx="BAND2", float gain_tx=0,
+        std::string args="device args",
+        std::string antenna_tx="BAND2", float gain_tx=0, float bw_tx=0,
         float timeout_tx=.1, float wait_tx=.001, float lo_offset_tx=0,
-        std::string antenna_rx="LNAH", float gain_rx=0,
+        std::string antenna_rx="LNAH", float gain_rx=0, float bw_rx=0,
         float timeout_rx=.1, float wait_rx=.001, float lo_offset_rx=0,
         const std::string& len_key="packet_len");
 
+
+      //Variable Sets and Gets
+      virtual int num_delay_samps()  = 0;
       virtual void set_num_delay_samps(int num_samps) = 0;
+
+      virtual float wait_rx()  = 0;
+      virtual float wait_tx()  = 0;
+      virtual void set_wait(float wait_rx, float wait_tx) = 0;
+
+
   	  virtual void set_rx_gain(size_t chan, float gain) = 0;
       virtual void set_tx_gain(size_t chan, float gain) = 0;
     };

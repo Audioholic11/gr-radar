@@ -51,23 +51,33 @@ namespace gr {
 
       /*!
        * \param samp_rate Signal sample rate (samples per second)
+       * \param packet_len Processing packet length
        * \param samp_up Number samples of up-chirp part
+       * \param samp_up_hold Number of samples of up_chirp hold part
        * \param samp_down Number samples of down-chirp part
+       * \param samp_down_hold Number of samples of down_chirp hold part
        * \param samp_cw Number samples of CW part
+       * \param samp_dead Number of dead samples
        * \param freq_cw CW signal frequency in baseband
        * \param freq_sweep Sweep frequency of up- and down-chirp
        * \param amplitude Signal amplitude
-       * \param len_key Packet length key for tagged stream
+       * \param len_key Processing Packet length key for tagged stream
+       * \param chirp_len_key Chirp Length Key for tagged stream
        */
       static sptr make(
         const int samp_rate,
+        const int packet_len,
         const int samp_up,
+        const int samp_up_hold,
         const int samp_down,
+        const int samp_down_hold,
         const int samp_cw,
+        const int samp_dead,
         const float freq_cw,
         const float freq_sweep,
         const float amplitude,
-        const std::string& len_key="packet_len"
+        const std::string& len_key="packet_len",
+        const std::string& chirp_len_key="chirp_len"
       );
     };
 
