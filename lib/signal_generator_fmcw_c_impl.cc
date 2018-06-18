@@ -93,7 +93,7 @@ namespace gr {
       , d_key_len(pmt::string_to_symbol(len_key))
       , d_value_len(pmt::from_long(d_packet_len))
 
-      , d_chirp_len(samp_up+samp_up_hold+samp_down+samp_down_hold)
+      , d_chirp_len(samp_cw+samp_up+samp_up_hold+samp_down+samp_down_hold)
       , d_total_samp(d_chirp_len + samp_dead)
       , d_key_chirp_len(pmt::string_to_symbol(chirp_len_key))
       , d_value_chirp_len(pmt::from_long(d_chirp_len))

@@ -354,14 +354,15 @@ namespace gr {
       //d_flagsTx = 0;
       //d_soapysdr->activateStream(d_tx_stream,d_flagsTx);
 
-      d_flagsTx =  SOAPY_SDR_HAS_TIME  | SOAPY_SDR_ONE_PACKET;
+      //d_flagsTx =  SOAPY_SDR_HAS_TIME  | SOAPY_SDR_ONE_PACKET;
+      d_flagsTx =  SOAPY_SDR_HAS_TIME | SOAPY_SDR_END_BURST;
       d_num_tx_samps = d_soapysdr->writeStream(d_tx_stream, &d_in_buffer[0], total_num_samps, d_flagsTx, d_timeNs_tx, d_timeoutUs);
       if (d_num_tx_samps != total_num_samps)
       {
         std::cout << "Tx Samples: " << d_num_tx_samps << std::endl;
       }
-      d_flagsTx = SOAPY_SDR_END_BURST;
-      d_num_tx_samps = d_soapysdr->writeStream(d_tx_stream, &d_in_buffer[0], 0, d_flagsTx, 0, d_timeoutUs);
+      //d_flagsTx = SOAPY_SDR_END_BURST;
+      //d_num_tx_samps = d_soapysdr->writeStream(d_tx_stream, &d_in_buffer[0], 0, d_flagsTx, 0, d_timeoutUs);
 
     }
 
@@ -375,9 +376,11 @@ namespace gr {
 
       d_timeoutUs = d_timeout_rx*10000000;
 
-      d_flagsRx =  SOAPY_SDR_HAS_TIME | SOAPY_SDR_ONE_PACKET;
+      //d_flagsRx =  SOAPY_SDR_HAS_TIME | SOAPY_SDR_ONE_PACKET;
+      //d_flagsRx =  SOAPY_SDR_HAS_TIME | SOAPY_SDR_END_BURST;
+      d_flagsRx =  0;
 
-      d_soapysdr->activateStream(d_rx_stream,d_flagsRx,d_timeNs_rx,total_num_samps);
+      d_soapysdr->activateStream(d_rx_stream, SOAPY_SDR_HAS_TIME , d_timeNs_rx, total_num_samps);
       d_num_rx_samps = d_soapysdr->readStream(d_rx_stream, &d_out_buffer[0], total_num_samps, d_flagsRx, d_timeNs_rx_return, d_timeoutUs);
       //d_timeNs_rx_return = d_timeNs_rx;
       if (d_num_rx_samps != total_num_samps)
