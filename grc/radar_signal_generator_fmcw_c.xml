@@ -4,6 +4,8 @@
   <category>[RADAR]/Generators</category>
   <import>import radar</import>
   <make>radar.signal_generator_fmcw_c($samp_rate,$packet_len ,$samp_up, $samp_up_hold, $samp_down, $samp_down_hold, $samp_cw, $samp_dead, $freq_cw, $freq_sweep, $amplitude, $len_key, $chirp_len_key)</make>
+  <callback>set_chirp($samp_up, $samp_up_hold, $samp_down, $samp_down_hold, $samp_cw)</callback>
+  <callback>set_d_samp_dead($samp_dead)</callback>
   <param>
     <name>Sample rate</name>
     <key>samp_rate</key>
@@ -69,6 +71,12 @@
     <name>Chirp length key</name>
     <key>chirp_len_key</key>
     <value>"chirp_len"</value>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Total length key</name>
+    <key>total_len_key</key>
+    <value>"total_len"</value>
     <type>string</type>
   </param>
   <source>

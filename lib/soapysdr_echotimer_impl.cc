@@ -132,7 +132,7 @@ namespace gr {
       d_register = 6<<5;
 
       //d_value = 0xFFE0;// GPIO(0-4) overload bits = 0
-      d_value = 0xFFF0;// GPIO(0-5) overload bits = 0
+      d_value = 0xFFF1;// GPIO(0-5) overload bits = 0
 
       d_soapysdr->writeRegister(d_listRegInterfaces[0], d_register,d_value);
       d_value = d_soapysdr->readRegister(d_listRegInterfaces[0],d_register);
@@ -380,7 +380,7 @@ namespace gr {
       //d_flagsRx =  SOAPY_SDR_HAS_TIME | SOAPY_SDR_END_BURST;
       d_flagsRx =  0;
 
-      d_soapysdr->activateStream(d_rx_stream, SOAPY_SDR_HAS_TIME , d_timeNs_rx, total_num_samps);
+      d_soapysdr->activateStream(d_rx_stream, SOAPY_SDR_HAS_TIME | SOAPY_SDR_END_BURST , d_timeNs_rx, total_num_samps);
       d_num_rx_samps = d_soapysdr->readStream(d_rx_stream, &d_out_buffer[0], total_num_samps, d_flagsRx, d_timeNs_rx_return, d_timeoutUs);
       //d_timeNs_rx_return = d_timeNs_rx;
       if (d_num_rx_samps != total_num_samps)
@@ -432,49 +432,7 @@ namespace gr {
       if(d_in_buffer.size()!=noutput_items) d_in_buffer.resize(noutput_items);
 
 
-      // Get time from Soapys RX
-      //d_time_now_rx_HW = d_soapysdr->getHardwareTime();
 
-      //ERRORS = d_soapysdr->readStreamStatus(d_rx_stream, d_chan_rx, d_flagsRx_return, d_timeNs_rx_return,d_timeoutUs);
-
-
-
-      /*
-      while((d_time_now_rx_HW-d_time_now_rx) < (d_time_packet*2))
-      {
-        //d_value = d_value ^ 0x08; d_soapysdr->writeGPIO(d_GPIOBanks[0],d_value);
-        d_time_now_rx_HW = d_soapysdr->getHardwareTime();
-        std::cout << " retry HW Timestamp: " << d_time_now_rx_HW-d_time_now_rx <<  std::endl;
-      }
-      /*
-      d_extra_work_time +=d_time_now_rx-d_time_now_tx-d_time_packet;
-      d_workNum++;
-      if(d_workNum>=5000)
-      {
-        d_extra_work_time = d_extra_work_time/d_workNum;
-        d_workNum = 1;
-      }
-      */
-
-      //std::cout << "  extra work timeNs: " << d_time_now_rx-d_time_now_tx-d_time_packet;
-      //std::cout << "  total: " << d_extra_work_time;
-      //std::cout << "WorkNum: "<< d_workNum << "  average packet delay: " << d_extra_work_time/d_workNum / d_time_packet << std::endl;
-
-
-      //d_time_now_rx = d_timeNs_rx_return + d_time_packet;
-      //std::cout << "Plus one Timepacket: " << d_time_now_rx*1e-6;
-
-      //d_time_now_rx = d_timeNs_rx + d_time_packet;
-      //d_time_now_rx = d_time_now_rx_HW;
-
-
-      //std::cout << "Errors: " << ERRORS << std::endl;
-      //std::cout << " TimestampHW: " << d_time_now_rx_HW*1e-6;
-      //std::cout << " Difference: " << d_time_now_rx_HW - d_time_now_rx;
-      //d_time_now_rx = std::max(d_time_now_rx,d_time_now_rx_HW);
-      //d_time_now_rx = d_time_now_rx_HW;
-      //std::cout << " Timestamp: " << d_time_now_rx*1e-6 <<  std::endl;
-      //d_time_now_tx = d_time_now_rx;
       if (firstPacket)
       {
         Chirp_Sync = d_soapysdr->readGPIO(d_GPIOBanks[0]) && (1<<6);
@@ -482,13 +440,14 @@ namespace gr {
         firstPacket = 0;
       }
 
-      if (d_SendPacket)
+
+      //Get New Packet Time
+      d_time_now_rx = d_soapysdr->getHardwareTime();
+      d_time_now_tx = d_time_now_rx;
+
+      if (d_SendPacket)// Tx and Rx Packet
       {
-        //d_time_now_rx = d_time_now_rx + (Rx_Skip_Packets+1)*d_time_packet;
-        d_time_now_rx = d_soapysdr->getHardwareTime();
-        d_value = d_value ^ 0x20; d_soapysdr->writeGPIO(d_GPIOBanks[0],d_value);
-        //d_time_now_rx = d_time_now_rx + d_time_packet;
-        d_time_now_tx = d_time_now_rx;
+
 
 
         // ************** Send thread *********************
@@ -496,40 +455,29 @@ namespace gr {
         d_noutput_items_send = noutput_items;
         d_thread_send = gr::thread::thread(boost::bind(&soapysdr_echotimer_impl::send, this));
 
-        d_value = d_value ^ 0x80; d_soapysdr->writeGPIO(d_GPIOBanks[0],d_value);
-
         // ************** Receive thread *********************
         //gr_vector_void_star d_out_buffer (initialize with output_items)
-        //d_out_buffer = output_items;
-        //d_noutput_items_recv = noutput_items;
-        //d_thread_recv = gr::thread::thread(boost::bind(&soapysdr_echotimer_impl::receive, this));
+        d_out_buffer = output_items;
+        d_noutput_items_recv = noutput_items;
+        d_thread_recv = gr::thread::thread(boost::bind(&soapysdr_echotimer_impl::receive, this));
 
-
-
-
+        d_value = d_value ^ 0x80; d_soapysdr->writeGPIO(d_GPIOBanks[0],d_value);
         // Wait for threads to complete
         d_thread_send.join();
-        //d_thread_recv.join();
+        d_thread_recv.join();
 
-        //d_out_recv = (gr_complex *) d_out_buffer[0];
+        d_out_recv = (gr_complex *) d_out_buffer[0];
 
+        memcpy(out,&d_out_recv[0]+d_num_delay_samps,(noutput_items-d_num_delay_samps)*sizeof(gr_complex)); // push buffer to output
+        memset(out+(noutput_items-d_num_delay_samps),0,d_num_delay_samps*sizeof(gr_complex)); // set zeros
 
-        //memcpy(out,&d_out_recv[0]+d_num_delay_samps,(noutput_items-d_num_delay_samps)*sizeof(gr_complex)); // push buffer to output
-        //memset(out+(noutput_items-d_num_delay_samps),0,d_num_delay_samps*sizeof(gr_complex)); // set zeros
-
-        memset(out,0,noutput_items*sizeof(gr_complex));
+        //memset(out,0,noutput_items*sizeof(gr_complex));
         firstPacket_Rx = 0;
       }
-      else//Rx
+      else//Rx only Packet
       {
-
-
-        if(firstPacket_Rx == Rx_Skip_Packets)
+        if(firstPacket_Rx == Rx_Skip_Packets)//skip return packets: set by Rx_Skip_Packets
         {
-          d_time_now_rx = d_soapysdr->getHardwareTime();
-          d_time_now_tx = d_time_now_rx;
-
-
           // ************** Receive thread *********************
           //gr_vector_void_star d_out_buffer (initialize with output_items)
           d_out_buffer = output_items;
@@ -537,15 +485,12 @@ namespace gr {
           d_thread_recv = gr::thread::thread(boost::bind(&soapysdr_echotimer_impl::receive, this));
 
 
-          //d_value = d_value ^ 0x80; d_soapysdr->writeGPIO(d_GPIOBanks[0],d_value);
-
           d_thread_recv.join();
           d_out_recv = (gr_complex *) d_out_buffer[0];
 
 
           memcpy(out,&d_out_recv[0]+d_num_delay_samps,(noutput_items-d_num_delay_samps)*sizeof(gr_complex)); // push buffer to output
           memset(out+(noutput_items-d_num_delay_samps),0,d_num_delay_samps*sizeof(gr_complex)); // set zeros
-          //memset(out,0,noutput_items*sizeof(gr_complex));
 
           firstPacket_Rx = 0;
         }

@@ -1,17 +1,17 @@
 /* -*- c++ -*- */
-/* 
+/*
  * Copyright 2014 Communications Engineering Lab, KIT.
- * 
+ *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
@@ -30,7 +30,7 @@ namespace gr {
 
     /*!
      * \brief This block tracks a singletarget detection with a particle or kalman filter. As input values with identifiers 'range' and 'velocity' are needed and should hold a f32vector with only one element. All input variables tagged with std gives the standard deviation of the parameter. The threshold_track is a value which decides with the likelihood of the data if the new data is accepted as a track. A good starting value is threshold_track = 0.001. threshold_lost is the number of false tracks unitel the track is lost and the tracker begins with a new one. The string filter decides which tracking kernel should be used. 'kalman' or 'particle' are valid. If 'particle' is chosen num_particle gives the number of particles for the particle filter. If 'kalman' is chosen there is no effect on the tracker.
-     * 
+     *
      * \param num_particle Number of particles for particle filter. There is no effect if kalman filter is chosen.
      * \param std_range_meas Standard deviation of the range measurement
      * \param std_velocity_meas Standard deviation of the velocity measurement
@@ -38,7 +38,7 @@ namespace gr {
      * \param threshold_track Value to decide if data is valid for the track
      * \param theshold_lost Number of false tracks until the current track is lost
      * \param filter Filter kernel to be used. 'kalman' or 'particle' are valid.
-     * 
+     *
      * \ingroup radar
      *
      */
@@ -62,4 +62,3 @@ namespace gr {
 } // namespace gr
 
 #endif /* INCLUDED_RADAR_TRACKING_SINGLETARGET_H */
-

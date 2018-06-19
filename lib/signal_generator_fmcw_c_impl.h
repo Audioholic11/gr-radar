@@ -32,20 +32,33 @@ namespace gr {
       signal_generator_fmcw_c_impl(
         const int samp_rate,
         const int packet_len,
-        const int samp_up,
-        const int samp_up_hold,
-        const int samp_down,
-        const int samp_down_hold,
-        const int samp_cw,
-        const int samp_dead,
+        int samp_up,
+        int samp_up_hold,
+        int samp_down,
+        int samp_down_hold,
+        int samp_cw,
+        int samp_dead,
         const float freq_cw,
         const float freq_sweep,
         const float amplitude,
         const std::string& len_key,
-        const std::string& chirp_len_key
+        const std::string& chirp_len_key,
+        const std::string& total_len_key
       );
       ~signal_generator_fmcw_c_impl();
 
+      //Aux methods: Set Members (perform calcuations if necessary)
+      void set_d_chirp_len(int chirp_length);
+      void set_d_total_len(int total_length);
+      void set_waveform();
+
+      void set_d_samp_dead(int dead_samples);
+      void set_d_samp_dead_round(int dead_samples);
+      void set_chirp(int up_samples, int up_hold_samples,
+                     int down_samples, int down_hold_samples,
+                     int cw_samples);
+
+      //work function
       int work(int noutput_items,
           gr_vector_const_void_star &input_items,
           gr_vector_void_star &output_items
@@ -54,17 +67,17 @@ namespace gr {
      private:
       const int d_samp_rate; //!< Sample rate of signal (sps)
       const int d_packet_len; //!< process packet length (samples)
-      const int d_samp_up; //!< Number of samples on the up-sweep
-      const int d_samp_up_hold; //!< Number of samples hold at top of ramp
-      const int d_samp_down; //!< Number of samples on the down-sweep
-      const int d_samp_down_hold; //!< Number of samples hold at buttom of ramp
-      const int d_samp_cw; //!< Number of samples on the CW part
-      const int d_samp_dead; //!< Number of unsent samples
-      const int d_chirp_len; //!< Total length of packet (up, down, CW)
+      int d_samp_up; //!< Number of samples on the up-sweep
+      int d_samp_up_hold; //!< Number of samples hold at top of ramp
+      int d_samp_down; //!< Number of samples on the down-sweep
+      int d_samp_down_hold; //!< Number of samples hold at buttom of ramp
+      int d_samp_cw; //!< Number of samples on the CW part
+      int d_samp_dead; //!< Number of unsent samples
+      int d_chirp_len; //!< Total length of packet (up, down, CW)
       const float d_freq_cw; //!< Frequency of the CW part
       const float d_freq_sweep; //!< Sweep frequency
       const float d_amplitude; //!< Amplitude
-      const int d_total_samp;
+      int d_total_len;
 
       //tags
       const pmt::pmt_t d_srcid; //!< srcid for tags
@@ -73,10 +86,13 @@ namespace gr {
       const pmt::pmt_t d_value_len; //!< Precalculated value of TSB tag
 
       const pmt::pmt_t d_key_chirp_len; //!< Tag identifier for chirp len
-      const pmt::pmt_t d_value_chirp_len; //!< Precalculated value of chirp len tag
+      pmt::pmt_t d_value_chirp_len; //!< Precalculated value of chirp len tag
+
+      const pmt::pmt_t d_key_total_len; //!< Tag identifier for total len
+      pmt::pmt_t d_value_total_len; //!< Precalculated value of total len tag
 
       const pmt::pmt_t d_key_deadtime; //!< Tag identifier for deadtime
-      const pmt::pmt_t d_value_deadtime; //!< Precalculated value of deadtime tag
+      pmt::pmt_t d_value_deadtime; //!< Precalculated value of deadtime tag
       bool d_counter_deadtime;
 
       std::complex<float> d_phase; //!< Store phase state

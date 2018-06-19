@@ -32,17 +32,18 @@ namespace gr {
     signal_generator_fmcw_c::make(
             const int samp_rate,
             const int packet_len,
-            const int samp_up,
-            const int samp_up_hold,
-            const int samp_down,
-            const int samp_down_hold,
-            const int samp_cw,
-            const int samp_dead,
+            int samp_up,
+            int samp_up_hold,
+            int samp_down,
+            int samp_down_hold,
+            int samp_cw,
+            int samp_dead,
             const float freq_cw,
             const float freq_sweep,
             const float amplitude,
             const std::string& len_key,
-            const std::string& chirp_len_key
+            const std::string& chirp_len_key,
+            const std::string& total_len_key
     ) {
       return gnuradio::get_initial_sptr(new signal_generator_fmcw_c_impl(
           samp_rate,
@@ -57,24 +58,26 @@ namespace gr {
           freq_sweep,
           amplitude,
           len_key,
-          chirp_len_key
+          chirp_len_key,
+          total_len_key
       ));
     }
 
     signal_generator_fmcw_c_impl::signal_generator_fmcw_c_impl(
             const int samp_rate,
             const int packet_len,
-            const int samp_up,
-            const int samp_up_hold,
-            const int samp_down,
-            const int samp_down_hold,
-            const int samp_cw,
-            const int samp_dead,
-            const float freq_cw,
+            int samp_up,
+            int samp_up_hold,
+            int samp_down,
+            int samp_down_hold,
+            int samp_cw,
+            int samp_dead,
+            float freq_cw,
             const float freq_sweep,
             const float amplitude,
             const std::string& len_key,
-            const std::string& chirp_len_key)
+            const std::string& chirp_len_key,
+            const std::string& total_len_key)
       : gr::sync_block("signal_generator_fmcw_c",
               gr::io_signature::make(0, 0, 0),
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
@@ -94,19 +97,48 @@ namespace gr {
       , d_value_len(pmt::from_long(d_packet_len))
 
       , d_chirp_len(samp_cw+samp_up+samp_up_hold+samp_down+samp_down_hold)
-      , d_total_samp(d_chirp_len + samp_dead)
+      , d_total_len(d_chirp_len + samp_dead)
+
       , d_key_chirp_len(pmt::string_to_symbol(chirp_len_key))
       , d_value_chirp_len(pmt::from_long(d_chirp_len))
 
+      , d_key_total_len(pmt::string_to_symbol(total_len_key))
+      , d_value_total_len(pmt::from_long(d_total_len))
+
       , d_key_deadtime(pmt::string_to_symbol("Deadtime"))
-      , d_value_deadtime(pmt::from_long(d_samp_dead))
+      , d_value_deadtime(pmt::from_long(samp_dead))
 
       , d_srcid(pmt::string_to_symbol("sig_gen_fmcw"))
 
       , d_wv_counter(0)
-      , d_waveform(d_total_samp, freq_cw)
-      , d_waveform_amp(d_total_samp,d_amplitude)
+      , d_waveform(d_total_len, freq_cw)
+      , d_waveform_amp(d_total_len,d_amplitude)
     {
+      set_d_samp_dead(d_samp_dead);//reset dead samples to allign total samples
+    }
+
+    signal_generator_fmcw_c_impl::~signal_generator_fmcw_c_impl()
+    {
+    }
+
+    //Auxiliary method: Set Members (perform calculations if necessary)
+    void
+    signal_generator_fmcw_c_impl::set_d_chirp_len(int chirp_length)
+    {d_chirp_len = chirp_length;}
+
+    void
+    signal_generator_fmcw_c_impl::set_d_total_len(int total_length)
+    {
+      d_total_len = total_length;
+      d_value_total_len = pmt::from_long(total_length);
+    }
+
+    void
+    signal_generator_fmcw_c_impl::set_waveform()
+    {
+
+      d_waveform.assign(d_total_len,d_freq_cw);
+      d_waveform_amp.assign(d_total_len,d_amplitude);
       // Setup waveform vector: Contains cw, up-chirp (hold), down-chirp (hold).
       // CW is already set above. Note this vector contains the phase increment of
       // the waveform, not the IQ samples itself.
@@ -130,12 +162,49 @@ namespace gr {
       d_waveform_amp[k+d_samp_cw+d_samp_up+d_samp_up_hold+d_samp_down+d_samp_down_hold] =
           0;
       }
+
+      d_wv_counter = 0;
+      d_counter_deadtime = 0;
     }
 
-    signal_generator_fmcw_c_impl::~signal_generator_fmcw_c_impl()
+    void  signal_generator_fmcw_c_impl::set_d_samp_dead(int dead_samples)
     {
+      //d_samp_dead = dead_samples;
+      set_d_samp_dead_round(dead_samples);
+      set_waveform();
     }
 
+    void
+    signal_generator_fmcw_c_impl::set_d_samp_dead_round(int dead_samples)
+    {
+      //round up to nearest packet len: update d_samp_dead and d_total_len
+      int packet_modulo = (d_chirp_len + dead_samples) % d_packet_len;
+      d_samp_dead = (dead_samples + d_packet_len) - packet_modulo;
+      d_total_len = d_chirp_len + d_samp_dead;
+
+      d_value_deadtime = pmt::from_long(d_samp_dead);
+      d_value_total_len = pmt::from_long(d_total_len);
+    }
+
+    void
+    signal_generator_fmcw_c_impl::set_chirp(int up_samples, int up_hold_samples,
+                                            int down_samples, int down_hold_samples,
+                                            int cw_samples)
+    {
+      //set members: all chirp related
+      d_samp_up = up_samples;
+      d_samp_up_hold = up_hold_samples;
+      d_samp_down = down_samples;
+      d_samp_down_hold = down_hold_samples;
+      d_samp_cw = cw_samples;
+      d_chirp_len = up_samples+up_hold_samples+down_samples+down_hold_samples+cw_samples;
+
+      d_value_chirp_len = pmt::from_long(d_chirp_len);
+
+      set_d_samp_dead(d_samp_dead);//must update deadsamples
+    }
+
+    // Work Function
     int
     signal_generator_fmcw_c_impl::work(
         int noutput_items,
@@ -146,15 +215,16 @@ namespace gr {
       // Integrate phase for iq signal
       for (int i=0; i<noutput_items; i++) {
 
-        if (((nitems_written(0)+i) % d_total_samp) == (d_chirp_len)) {
+        if (((nitems_written(0)+i) % d_total_len) == (d_chirp_len)) {
           d_counter_deadtime = 1;
         }
 
         // Set tag on every packet_len-th item
 
         // Set tag on every chirp_len-th item
-        if ((nitems_written(0)+i) % d_total_samp == 0) {
+        if ((nitems_written(0)+i) % d_total_len == 0) {
           add_item_tag(0, nitems_written(0)+i, d_key_chirp_len, d_value_chirp_len, d_srcid);
+          add_item_tag(0, nitems_written(0)+i, d_key_total_len, d_value_total_len, d_srcid);
           d_counter_deadtime = 0;
           d_wv_counter = 0;
         }

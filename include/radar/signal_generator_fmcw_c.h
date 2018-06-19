@@ -67,18 +67,29 @@ namespace gr {
       static sptr make(
         const int samp_rate,
         const int packet_len,
-        const int samp_up,
-        const int samp_up_hold,
-        const int samp_down,
-        const int samp_down_hold,
-        const int samp_cw,
-        const int samp_dead,
+        int samp_up,
+        int samp_up_hold,
+        int samp_down,
+        int samp_down_hold,
+        int samp_cw,
+        int samp_dead,
         const float freq_cw,
         const float freq_sweep,
         const float amplitude,
         const std::string& len_key="packet_len",
-        const std::string& chirp_len_key="chirp_len"
+        const std::string& chirp_len_key="chirp_len",
+        const std::string& total_len_key="total_len"
       );
+
+      //Member Set
+      virtual void set_d_chirp_len(int chirp_length) = 0;
+      virtual void set_d_total_len(int total_length) = 0;
+      virtual void set_waveform() = 0;
+      virtual void set_d_samp_dead(int dead_samples) = 0;
+      virtual void set_d_samp_dead_round(int dead_samples) = 0;
+      virtual void set_chirp(int up_samples, int up_hold_samples,
+                     int down_samples, int down_hold_samples,
+                     int cw_samples) = 0;
     };
 
   } // namespace radar
