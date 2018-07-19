@@ -96,7 +96,7 @@ namespace gr {
       //******************* Setup Soapy RX *******************//
       d_chan_rx = 0;
 
-      //d_kw = SoapySDR::KwargsFromString(d_args);
+      d_kw = SoapySDR::KwargsFromString(d_args);
       // Setup USRP RX: args (addr,...)
       d_soapysdr = SoapySDR::Device::make(d_kw);
       SoapySDR::Kwargs  HWINFO = d_soapysdr->getHardwareInfo();
@@ -132,7 +132,8 @@ namespace gr {
       d_register = 6<<5;
 
       //d_value = 0xFFE0;// GPIO(0-4) overload bits = 0
-      d_value = 0xFFF1;// GPIO(0-5) overload bits = 0
+      d_value = 0xFF80;// GPIO(0-6) overload bits = 0
+
 
       d_soapysdr->writeRegister(d_listRegInterfaces[0], d_register,d_value);
       d_value = d_soapysdr->readRegister(d_listRegInterfaces[0],d_register);
@@ -147,7 +148,8 @@ namespace gr {
       d_value = 0x00; d_soapysdr->writeGPIO(d_GPIOBanks[0],d_value);
 
       //All Pins Outputs
-      d_value = 0xFB;//all out but bit 6
+      //d_value = 0xFB;//all out but bit 6
+      d_value = 0x00;//all in (overwrite)
       d_soapysdr->writeGPIODir(d_GPIOBanks[0],d_value);
 
       // Setup Soapy RX: sample rate
@@ -461,7 +463,7 @@ namespace gr {
         d_noutput_items_recv = noutput_items;
         d_thread_recv = gr::thread::thread(boost::bind(&soapysdr_echotimer_impl::receive, this));
 
-        d_value = d_value ^ 0x80; d_soapysdr->writeGPIO(d_GPIOBanks[0],d_value);
+        //d_value = d_value ^ 0x80; d_soapysdr->writeGPIO(d_GPIOBanks[0],d_value);
         // Wait for threads to complete
         d_thread_send.join();
         d_thread_recv.join();
@@ -512,7 +514,7 @@ namespace gr {
 
 
 
-      d_value = 0; d_soapysdr->writeGPIO(d_GPIOBanks[0],d_value);
+      //d_value = 0; d_soapysdr->writeGPIO(d_GPIOBanks[0],d_value);
 
       // Tell runtime system how many output items we produced.
       return noutput_items;

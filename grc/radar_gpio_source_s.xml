@@ -1,0 +1,27 @@
+<block>
+  <name>GPIO Source</name>
+  <key>radar_gpio_source_s</key>
+  <category>[RADAR]/Tools</category>
+  <import>import radar</import>
+  <make>radar.gpio_source_s($device_args, $pins, $sample_rate)</make>
+  <param>
+    <name>Device_args</name>
+    <key>device_args</key>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Pins</name>
+    <key>pins</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Sample_rate</name>
+    <key>sample_rate</key>
+    <type>int</type>
+  </param>
+  <source>
+    <name>out</name>
+    <type>short</type>
+    <nports>pins</nports>
+  </source>
+</block>

@@ -23,42 +23,16 @@
 
 #include <radar/soapysdr_echotimer.h>
 
-//#include <uhd/utils/thread_priority.hpp>
-//#include <uhd/usrp/multi_usrp.hpp>
-
 //soapy
 #include <SoapySDR/Device.hpp>
 #include <SoapySDR/Time.hpp>//?
 #include <SoapySDR/Version.hpp>
-
-//local
-//#include "soapy_source_c.h"
-//#include "soapy_common.h"
-//#include "arg_helpers.h"
-//#include "source_iface.h"
-//#include "arg_helpers.h"
 
 
 //boost
 #include <boost/shared_ptr.hpp>
 #include <boost/utility.hpp>
 #include <boost/thread/thread.hpp>
-//#include <boost/thread/mutex.hpp>
-//#include <boost/assign.hpp>
-//#include <boost/format.hpp>
-//#include <boost/lexical_cast.hpp>
-
-//osmosdr
-//#include <osmosdr/ranges.h>
-//#include "osmosdr/source.h"//why local?
-
-//gnuradio
-//#include <gnuradio/blocks/null_source.h>
-//#include <gnuradio/blocks/null_sink.h>
-//#include <gnuradio/blocks/throttle.h>
-//#include <gnuradio/constants.h>
-//#include <gnuradio/block.h>
-//#include <gnuradio/sync_block.h>
 
 
 namespace gr {

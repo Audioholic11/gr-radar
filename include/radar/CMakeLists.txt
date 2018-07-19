@@ -53,5 +53,6 @@ install(FILES
     estimator_rcs.h
     trigger_command.h
     soapysdr_echotimer.h
-    DESTINATION include/radar
+    gpio_source_s.h
+    soapysdr_echotimer_stretch.h DESTINATION include/radar
 )

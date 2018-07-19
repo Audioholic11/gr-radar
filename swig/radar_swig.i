@@ -39,6 +39,8 @@
 #include "radar/estimator_rcs.h"
 #include "radar/trigger_command.h"
 #include "radar/soapysdr_echotimer.h"
+#include "radar/gpio_source_s.h"
+#include "radar/soapysdr_echotimer_stretch.h"
 %}
 
 
@@ -111,3 +113,7 @@ GR_SWIG_BLOCK_MAGIC2(radar, trigger_command);
 
 %include "radar/soapysdr_echotimer.h"
 GR_SWIG_BLOCK_MAGIC2(radar, soapysdr_echotimer);
+%include "radar/gpio_source_s.h"
+GR_SWIG_BLOCK_MAGIC2(radar, gpio_source_s);
+%include "radar/soapysdr_echotimer_stretch.h"
+GR_SWIG_BLOCK_MAGIC2(radar, soapysdr_echotimer_stretch);

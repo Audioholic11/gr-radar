@@ -68,3 +68,5 @@ GR_ADD_TEST(qa_estimator_ofdm ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/q
 GR_ADD_TEST(qa_estimator_rcs ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_estimator_rcs.py)
 GR_ADD_TEST(qa_trigger_command ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_trigger_command.py)
 GR_ADD_TEST(qa_soapysdr_echotimer ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_soapysdr_echotimer.py)
+GR_ADD_TEST(qa_gpio_source_s ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_gpio_source_s.py)
+GR_ADD_TEST(qa_soapysdr_echotimer_stretch ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_soapysdr_echotimer_stretch.py)
