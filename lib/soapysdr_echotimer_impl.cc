@@ -127,6 +127,12 @@ namespace gr {
       d_register = 0x00CD;
       d_soapysdr->writeRegister(d_listRegInterfaces[0],d_register,d_value);
 
+
+      //Chirp setting
+      //d_register = 0x001D;
+      //d_value = 5;
+      //d_soapysdr->writeRegister(d_listRegInterfaces[0],d_register,d_value);
+
       //GPIO Setup
       //Setup GPIO OVERLOAD
       d_register = 6<<5;
@@ -151,6 +157,15 @@ namespace gr {
       //d_value = 0xFB;//all out but bit 6
       d_value = 0x00;//all in (overwrite)
       d_soapysdr->writeGPIODir(d_GPIOBanks[0],d_value);
+
+
+      //Sensors
+      sensors = d_soapysdr->listSensors();
+
+      for(int i=0; i<sensors.size();i++)
+      {
+        std::cout << "Sensors Banks: " << i << " " << sensors[i] << std::endl;
+      }
 
       // Setup Soapy RX: sample rate
       std::cout << "Setting RX Rate: " << d_samp_rate << std::endl;
@@ -446,6 +461,9 @@ namespace gr {
       //Get New Packet Time
       d_time_now_rx = d_soapysdr->getHardwareTime();
       d_time_now_tx = d_time_now_rx;
+
+      //std::cout << " read chirpPeriod: "<< d_soapysdr->readSensor("chirp_period") << std::endl;
+      //std::cout << " read chirpTime: "<< d_soapysdr->readSensor("chirp_time") << std::endl;
 
       if (d_SendPacket)// Tx and Rx Packet
       {
