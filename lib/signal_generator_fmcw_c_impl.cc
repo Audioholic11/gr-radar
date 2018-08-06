@@ -115,6 +115,10 @@ namespace gr {
       , d_waveform_amp(d_total_len,d_amplitude)
     {
       set_d_samp_dead(d_samp_dead);//reset dead samples to allign total samples
+      //set_max_noutput_items(100*d_packet_len);
+      set_min_noutput_items(2*d_packet_len);
+      //process_aff_set.push_back(3);
+      //set_processor_affinity(process_aff_set);
     }
 
     signal_generator_fmcw_c_impl::~signal_generator_fmcw_c_impl()
@@ -210,7 +214,10 @@ namespace gr {
         int noutput_items,
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items
-    ) {
+    )
+    {
+
+
       gr_complex *out = (gr_complex *) output_items[0];
       // Integrate phase for iq signal
       for (int i=0; i<noutput_items; i++) {
@@ -238,8 +245,12 @@ namespace gr {
         }
 
 
-
-
+         //process_aff = processor_affinity();
+         //std::cout << FMAG("Affinity size: ") << process_aff.size() <<std::endl;
+         //for(int i = 0;i<process_aff.size();i++)
+         //{
+          // std::cout << FMAG("Affinity: ") << process_aff[i]<< std::endl;
+         //}
 
         // Write sample
         *out++ = d_amp*exp(d_phase);
@@ -252,6 +263,8 @@ namespace gr {
         d_amp = d_waveform_amp[d_wv_counter];
         d_wv_counter++;
       }
+
+      //std::cout << "End work packet FMCW Signal: " <<noutput_items << std::endl;
 
       // Tell runtime system how many output items we produced.
       return noutput_items;
