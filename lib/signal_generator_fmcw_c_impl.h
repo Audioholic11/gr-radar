@@ -23,6 +23,9 @@
 
 #include <radar/signal_generator_fmcw_c.h>
 
+//colors
+#include <colors.h>
+
 namespace gr {
   namespace radar {
 
@@ -65,6 +68,8 @@ namespace gr {
       );
 
      private:
+
+
       const int d_samp_rate; //!< Sample rate of signal (sps)
       const int d_packet_len; //!< process packet length (samples)
       int d_samp_up; //!< Number of samples on the up-sweep
@@ -100,6 +105,10 @@ namespace gr {
       std::vector<float> d_waveform; //!< Phase increment of the waveform
       std::vector<float> d_waveform_amp; //!< Amplitude increment of the waveform
       int d_wv_counter; //!< Stores the current position in the waveform
+
+      //debug
+      std::vector<int> process_aff;
+      std::vector<int> process_aff_set;
     };
 
   } // namespace radar
