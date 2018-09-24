@@ -1,17 +1,17 @@
 /* -*- c++ -*- */
-/* 
+/*
  * Copyright 2018 <+YOU OR YOUR COMPANY+>.
- * 
+ *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
@@ -46,11 +46,29 @@ namespace gr {
        * class. radar::soapysdr_echotimer_stretch::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int samp_rate, float center_freq, int num_delay_samps,);
+       static sptr make(int samp_rate, float center_freq, int num_delay_samps,
+         std::string args="device args",
+         std::string antenna_tx="BAND2", float gain_tx=0, float bw_tx=0,
+         float timeout_tx=.1, float wait_tx=.001, float lo_offset_tx=0,
+         std::string antenna_rx="LNAH", float gain_rx=0, float bw_rx=0,
+         float timeout_rx=.1, float wait_rx=.001, float lo_offset_rx=0,
+         const std::string& len_key="packet_len");
+
+
+       //Variable Sets and Gets
+       virtual int num_delay_samps()  = 0;
+       virtual void set_num_delay_samps(int num_samps) = 0;
+
+       virtual float wait_rx()  = 0;
+       virtual float wait_tx()  = 0;
+       virtual void set_wait(float wait_rx, float wait_tx) = 0;
+
+
+       virtual void set_rx_gain(size_t chan, float gain) = 0;
+       virtual void set_tx_gain(size_t chan, float gain) = 0;
     };
 
   } // namespace radar
 } // namespace gr
 
 #endif /* INCLUDED_RADAR_SOAPYSDR_ECHOTIMER_STRETCH_H */
-

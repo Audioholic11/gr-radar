@@ -74,7 +74,8 @@ list(APPEND radar_sources
     trigger_command_impl.cc
     soapysdr_echotimer_impl.cc
     gpio_source_s_impl.cc
-    soapysdr_echotimer_stretch_impl.cc )
+    soapysdr_echotimer_stretch_impl.cc
+    soapysdr_source_stretch_impl.cc )
 
 set(radar_sources "${radar_sources}" PARENT_SCOPE)
 if(NOT radar_sources)

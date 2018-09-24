@@ -18,8 +18,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -290,7 +288,6 @@ namespace gr {
      */
     soapysdr_echotimer_stretch_impl::~soapysdr_echotimer_stretch_impl()
     {
-
       set_tx_gain(d_chan_tx, 0);
       set_rx_gain(d_chan_rx, 0);
       d_soapysdr->writeRegister(d_listRegInterfaces[1], 6<<5, 0xFFFF);

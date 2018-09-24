@@ -76,6 +76,7 @@ namespace gr {
         int ERRORS;
         int Rx_Skip_Packets = 0;
         bool Chirp_Sync;
+        std::vector<std::string> sensors;
 
 
 

@@ -1,14 +1,15 @@
 <?xml version="1.0"?>
 <block>
-  <name>Soapysdr Echotimer Stretch</name>
-  <key>radar_soapysdr_echotimer_stretch</key>
-  <category>[RADAR]/RADAR</category>
+  <name>soapysdr_source_stretch</name>
+  <key>radar_soapysdr_source_stretch</key>
+  <category>[radar]</category>
   <import>import radar</import>
-  <make>radar.soapysdr_echotimer_stretch($samp_rate, $center_freq, $num_delay_samps, $args, $antenna_tx, $gain_tx, $bw_tx, $timeout_tx, $wait_tx, $lo_offset_tx, $antenna_rx, $gain_rx, $bw_rx, $timeout_rx, $wait_rx, $lo_offset_rx, $len_key)</make>
+  <make>radar.soapysdr_source_stretch($samp_rate, $center_freq, $num_delay_samps, $args, $antenna_tx, $gain_tx, $bw_tx, $timeout_tx, $wait_tx, $lo_offset_tx, $antenna_rx, $gain_rx, $bw_rx, $timeout_rx, $wait_rx, $lo_offset_rx, $len_key,$packet_len)</make>
   <callback>set_num_delay_samps($num_delay_samps)</callback>
   <callback>set_tx_gain(0,$gain_tx)</callback>
   <callback>set_rx_gain(0,$gain_rx)</callback>
   <callback>set_wait($wait_rx,$wait_tx)</callback>
+  <callback>set_packet_len($packet_len)</callback>
   <param>
     <name>Samp_rate</name>
     <key>samp_rate</key>
@@ -108,12 +109,14 @@
     <value>"packet_len"</value>
     <type>string</type>
   </param>
-  <sink>
-    <name>in</name>
-    <type>complex</type>
-  </sink>
+  <param>
+    <name>packet_len</name>
+    <key>packet_len</key>
+    <value>0</value>
+    <type>int</type>
+  </param>
   <source>
     <name>out</name>
     <type>complex</type>
   </source>
-</block>
+  </block>

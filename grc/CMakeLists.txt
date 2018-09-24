@@ -49,5 +49,6 @@ install(FILES
     radar_trigger_command.xml
     radar_soapysdr_echotimer.xml
     radar_gpio_source_s.xml
-    radar_soapysdr_echotimer_stretch.xml DESTINATION share/gnuradio/grc/blocks
+    radar_soapysdr_echotimer_stretch.xml
+    radar_soapysdr_source_stretch.xml DESTINATION share/gnuradio/grc/blocks
 )
