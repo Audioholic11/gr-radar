@@ -254,7 +254,8 @@ namespace gr {
       d_workNum = 0;
       d_packetNum = 0;
       errorNum = 0;
-      firstPacket = 10;
+      firstPacket = 0;
+      debug = 0;
 
       chirp_lag = 0;
       prev_chirp_lag=0;
@@ -424,16 +425,6 @@ namespace gr {
       gr_complex *out = (gr_complex *) output_items[0];
 
 
-      //first packet send zeros
-      /*if(firstPacket)
-      {
-        firstPacket --;
-        //d_soapysdr->setHardwareTime(0.0);
-        memset(out,0,noutput_items*sizeof(gr_complex));
-        add_item_tag(0, nitems_written(0), d_key_len, d_value_len, d_srcid);
-        return noutput_items;
-      }*/
-
 
       // Set output items on packet length
       d_time_packet = (d_packet_len*1e9/d_samp_rate);
@@ -459,8 +450,21 @@ namespace gr {
 
       d_time_now_rx = d_soapysdr->getHardwareTime();
 
+      //first packet send zeros
+      if(firstPacket)
+      {
+        firstPacket --;
+        //d_soapysdr->setHardwareTime(0.0);
+        memset(out,0,noutput_items*sizeof(gr_complex));
+        chirp_len_value = pmt::from_long((long) chirp_timePeriod);
+        //add_item_tag(0, nitems_written(0), d_key_len, d_value_len, d_srcid);
+        add_item_tag(0, nitems_written(0), chirp_len_key, chirp_len_value, d_srcid);
+        return noutput_items;
+      }
+
+
       //-------------------------debug--------------------
-      if(d_workNum % 100 == 0 || d_workNum % 100 == 1)
+      if(debug && (d_workNum % 100 == 0 || d_workNum % 100 == 1))
       {
         std::cout << FGRN(BOLD("-> workNum: ")) << d_workNum << FGRN(" noutput_items: ") << noutput_items << std::endl;
         //debug
@@ -524,10 +528,11 @@ namespace gr {
           // ************** End Receive thread ******************
 
           // Setup rx_time tag
-          d_time_val = pmt::make_tuple(pmt::from_uint64(d_time_now_rx));
-          
+          //d_time_val = pmt::make_tuple(pmt::from_uint64(d_time_now_rx));
+          d_time_val = pmt::from_long((long) d_time_now_rx);
+
           //Get New Packet Time
-        d_time_now_rx = d_soapysdr->getHardwareTime();
+          d_time_now_rx = d_soapysdr->getHardwareTime();
 
           //pointer cast
           d_out_recv = (gr_complex *) d_out_buffer[0];
@@ -553,7 +558,7 @@ namespace gr {
           //d_time_now_rx = d_timeNs_rx + d_time_packet;
 
 
-          if(d_workNum % 100 == 0 || d_workNum % 100 == 1)
+          if(debug && (d_workNum % 100 == 0 || d_workNum % 100 == 1))
           {
             std::cout << FYEL(BOLD(" packet in work number: ")) << sampi << FYEL(" d_noutput_items_recv: ") << d_noutput_items_recv << std::endl;
             //debug
@@ -569,7 +574,8 @@ namespace gr {
           //-(noutput_items-sampi) < chirp_lag_write < sampi
 
           // Setup chirp lag
-          chirp_len_value = pmt::make_tuple(pmt::from_uint64(chirp_timePeriod));
+          //chirp_len_value = pmt::make_tuple(pmt::from_uint64(chirp_timePeriod));
+          chirp_len_value = pmt::from_long((long) chirp_timePeriod);
 
 
           do {
@@ -620,7 +626,7 @@ namespace gr {
 
       }
 
-      std::cout << std::endl;
+      //std::cout << std::endl;
       memcpy(out,&out[0]+d_num_delay_samps,(noutput_items-d_num_delay_samps)*sizeof(gr_complex)); // push buffer to output
       memset(out+(noutput_items-d_num_delay_samps),0,d_num_delay_samps*sizeof(gr_complex)); // set zeros
 

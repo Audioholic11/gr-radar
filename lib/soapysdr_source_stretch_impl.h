@@ -107,7 +107,7 @@ namespace gr {
         int time_sample_difference =0;
         int prev_time_sample_difference =0;
         std::vector<int> process_aff_set;
-
+        bool debug;
         volatile int firstPacket;
         int Rx_Skip_Packets = 0;
         bool Chirp_Sync;
