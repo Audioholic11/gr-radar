@@ -71,3 +71,4 @@ GR_ADD_TEST(qa_soapysdr_echotimer ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DI
 GR_ADD_TEST(qa_gpio_source_s ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_gpio_source_s.py)
 GR_ADD_TEST(qa_soapysdr_echotimer_stretch ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_soapysdr_echotimer_stretch.py)
 GR_ADD_TEST(qa_soapysdr_source_stretch ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_soapysdr_source_stretch.py)
+GR_ADD_TEST(qa_tagged_stream_align_radar_pulse_cc ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tagged_stream_align_radar_pulse_cc.py)

@@ -55,5 +55,6 @@ install(FILES
     soapysdr_echotimer.h
     gpio_source_s.h
     soapysdr_echotimer_stretch.h
-    soapysdr_source_stretch.h DESTINATION include/radar
+    soapysdr_source_stretch.h
+    tagged_stream_align_radar_pulse_cc.h DESTINATION include/radar
 )
