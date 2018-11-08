@@ -2,7 +2,7 @@
 <block>
   <name>soapysdr_source_stretch</name>
   <key>radar_soapysdr_source_stretch</key>
-  <category>[radar]</category>
+  <category>[RADAR]/SoapySDR</category>
   <import>import radar</import>
   <make>radar.soapysdr_source_stretch($samp_rate, $center_freq, $num_delay_samps, $args, $antenna_tx, $gain_tx, $bw_tx, $timeout_tx, $wait_tx, $lo_offset_tx, $antenna_rx, $gain_rx, $bw_rx, $timeout_rx, $wait_rx, $lo_offset_rx, $len_key,$packet_len)</make>
   <callback>set_num_delay_samps($num_delay_samps)</callback>

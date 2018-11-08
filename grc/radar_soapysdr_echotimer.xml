@@ -1,7 +1,7 @@
 <block>
   <name>Soapysdr echotimer</name>
   <key>radar_soapysdr_echotimer</key>
-  <category>[RADAR]/RADAR</category>
+  <category>[RADAR]/SoapySDR</category>
   <import>import radar</import>
   <make>radar.soapysdr_echotimer($samp_rate, $center_freq, $num_delay_samps, $args, $antenna_tx, $gain_tx, $bw_tx, $timeout_tx, $wait_tx, $lo_offset_tx, $antenna_rx, $gain_rx, $bw_rx, $timeout_rx, $wait_rx, $lo_offset_rx, $len_key)</make>
   <callback>set_num_delay_samps($num_delay_samps)</callback>

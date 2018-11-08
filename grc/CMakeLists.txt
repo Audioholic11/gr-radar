@@ -51,5 +51,6 @@ install(FILES
     radar_gpio_source_s.xml
     radar_soapysdr_echotimer_stretch.xml
     radar_soapysdr_source_stretch.xml
-    radar_tagged_stream_align_radar_pulse_cc.xml DESTINATION share/gnuradio/grc/blocks
+    radar_tagged_stream_align_radar_pulse_cc.xml
+    DESTINATION share/gnuradio/grc/blocks
 )

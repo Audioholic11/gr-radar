@@ -48,6 +48,10 @@ namespace gr {
               d_value_len(pmt::from_long(d_chirp_len))
     {
       set_tag_propagation_policy(TPP_DONT);
+      d_srcid = pmt::string_to_symbol("tagged_stream_align_radar_pulse_cc");
+      d_last_chirp_len_offset=0;
+      d_input_tag_shift=0;
+      workNum=0;
     }
 
     /*
@@ -70,45 +74,100 @@ namespace gr {
                        gr_vector_void_star &output_items)
     {
 
+      gr_complex *in = (gr_complex *) input_items[0];
+      gr_complex *out = (gr_complex *) output_items[0];
+
       /*std::vector<tag_t> tags;
-      int ncp = std::min(noutput_items, ninput_items[0]);
+
       get_tags_in_range(tags, 0, nitems_read(0), nitems_read(0) + noutput_items);
       for(size_t i=0; i<tags.size(); i++){
           gr::tag_t t = tags[i];
           int offset = (nitems_read(0) - nitems_written(0));
           t.offset -= offset;
           add_item_tag(0,t);
-          }
-      memcpy(output_items[0], input_items[0], ncp*d_itemsize);
-      consume_each(ncp);
-      return ncp;*/
+        }*/
 
-
-        // tags
-        std::vector<tag_t> tags;
-        int num_chirps;
 
         const uint64_t nread = nitems_read(0); //number of items read on port 0
-        get_tags_in_range(tags, 0, nread, nread+noutput_items);
+        const uint64_t nwritten = nitems_written(0);
+
+        workNum++;
+        if(ninput_items[0] > 0)
+        {
+          std::cout << std::endl << BOLD(FGRN("Work Number: ")) << workNum << std::endl;
+          std::cout << FWHT(" ninput_items: ") << ninput_items[0] << std::endl;
+          std::cout << FWHT(" noutput_items: ") << noutput_items << std::endl;
+
+          std::cout << FWHT(" number read: ") << nread << std::endl;
+          std::cout << FWHT(" number written: ") << nwritten << std::endl;
+
+        }
+        //Get and iterate Tags
+
+        std::vector<tag_t> tags;
+        std::vector<tag_t> chirp_tags;
+        int num_chirps = 0;
+        d_output_tag_shift = 0;
+
+        get_tags_in_range(tags, 0, nread, nread+ninput_items[0]);
 
         std::sort(tags.begin(), tags.end(), tag_t::offset_compare);
 
         std::vector<tag_t>::iterator vitr = tags.begin();
 
-        //std::cout << "packet offset: " << nread << std::endl;
-
         while(vitr != tags.end())
         {
 
-          std::cout << "tags offset: " << (*vitr).offset << " key: " << (*vitr).key << " value: " << (*vitr).value << std::endl;
-          if((pmt::eqv((*vitr).key, d_key_len)))
+          //std::cout << "tags offset: " << (*vitr).offset << " key: " << (*vitr).key << " value: " << (*vitr).value << std::endl;
+          if((pmt::eqv((*vitr).key, d_key_len)))//find chirp_len
           {
-            num_chirps++;
+            //if((*vitr).offset >= (d_last_chirp_len_offset + pmt::to_long((*vitr).value)))
+            if((*vitr).offset > d_last_chirp_len_offset)//avoid duplicates
+            {
+              //std::cout << "tags offset: " << (*vitr).offset << " key: " << (*vitr).key << " value: " << (*vitr).value << std::endl;
+
+
+              chirp_tags.push_back(*vitr);
+
+              std::cout << UNDL(FCYN(" tags offset: ")) << chirp_tags[num_chirps].offset << " key: " << chirp_tags[num_chirps].key << " value: " << chirp_tags[num_chirps].value << std::endl;
+
+              d_input_tag_shift = (*vitr).offset - nread;
+              d_chirp_len_offset_period = (*vitr).offset - d_last_chirp_len_offset;
+
+              //add_item_tag(0, nwritten+d_output_tag_shift, (*vitr).key, (*vitr).value, d_srcid);
+              add_item_tag(0, (*vitr).offset, (*vitr).key, (*vitr).value, d_srcid);
+
+              //memcpy(out+d_output_tag_shift, in+d_input_tag_shift, pmt::to_long((*vitr).value)*sizeof(gr_complex));
+
+              std::cout << FYEL(" d_input_tag_shift: ") << d_input_tag_shift << std::endl;
+              std::cout << FYEL(" d_output_tag_shift: ") << d_output_tag_shift << std::endl;
+              std::cout << FYEL(" d_last_chirp_len_offset: ") << d_last_chirp_len_offset << std::endl;
+              std::cout << FYEL(" d_chirp_len_offset_period: ") << d_chirp_len_offset_period << std::endl;
+
+
+              d_output_tag_shift += pmt::to_long((*vitr).value);
+              d_last_chirp_len_offset = (*vitr).offset;
+              num_chirps++;
+            }
           }
 
           vitr++;
         }
 
+        //std::cout << "noutput_items: " << noutput_items << std::endl;
+        //std::cout << "ninput_items: " << ninput_items[0] << std::endl;
+        int ncp = std::min(noutput_items, ninput_items[0]);
+        if(ncp >0)
+        {
+          std::cout << FBLU(" Number of Chirps per work: ") << num_chirps << std::endl;
+          std::cout << FBLU(" Consume/Return Number: ") << ncp << std::endl;
+          //std::cout << "ninput_items: " << ninput_items[0] << std::endl;
+          //std::cout << "noutput_items: " << noutput_items << std::endl;
+          //std::cout << FCYN("Work Number: ")<< workNum << std::endl;
+        }
+        memcpy(out, in, ncp*sizeof(gr_complex));
+        consume_each(ncp);
+        return ncp;
 
       /*  get_tags_in_range(tags, 0, nitems_read(0), nitems_read(0) + ninput_items[0], d_lengthtag);
         if(tags.size() > 0){

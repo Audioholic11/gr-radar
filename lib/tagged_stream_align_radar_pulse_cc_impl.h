@@ -23,6 +23,8 @@
 
 #include <radar/tagged_stream_align_radar_pulse_cc.h>
 
+#include <colors.h>
+
 namespace gr {
   namespace radar {
 
@@ -34,8 +36,16 @@ namespace gr {
 
       pmt::pmt_t d_key_len;
       pmt::pmt_t d_value_len;
+      pmt::pmt_t d_srcid;
 
-      
+      uint64_t d_last_chirp_len_offset;
+      uint64_t d_chirp_len_offset_period;
+
+      uint64_t d_input_tag_shift;
+      uint64_t d_output_tag_shift;
+
+      //debug
+      int workNum;
 
      public:
       tagged_stream_align_radar_pulse_cc_impl(int samp_rate, const std::string& len_key, int chirp_len);
