@@ -33,26 +33,38 @@ namespace gr {
      private:
       int d_chirp_len;
       int d_samp_rate;
+      int d_debug_print;
 
       pmt::pmt_t d_key_len;
       pmt::pmt_t d_value_len;
       pmt::pmt_t d_srcid;
 
+      int d_chirp_len_tag_value;
+      float d_input_chirps;
+      float d_output_chirps;
+      float d_in_out_chirps_ratio;
+
       uint64_t d_last_chirp_len_offset;
       uint64_t d_chirp_len_offset_period;
+      uint64_t d_last_input_sample_used;
+
+      int d_overflow;
 
       uint64_t d_input_tag_shift;
-      uint64_t d_output_tag_shift;
+      int d_output_tag_shift;
 
       //debug
       int workNum;
+      int forcastNum;
 
      public:
-      tagged_stream_align_radar_pulse_cc_impl(int samp_rate, const std::string& len_key, int chirp_len);
+      tagged_stream_align_radar_pulse_cc_impl(int samp_rate, const std::string& len_key, int chirp_len,int debug_print);
       ~tagged_stream_align_radar_pulse_cc_impl();
 
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+
+      void set_debug_print(int debug_print);
 
       int general_work(int noutput_items,
            gr_vector_int &ninput_items,

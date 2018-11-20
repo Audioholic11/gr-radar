@@ -43,6 +43,7 @@
 #include "radar/soapysdr_echotimer_stretch.h"
 #include "radar/soapysdr_source_stretch.h"
 #include "radar/tagged_stream_align_radar_pulse_cc.h"
+#include "radar/estimator_stretch.h"
 %}
 
 
@@ -123,3 +124,5 @@ GR_SWIG_BLOCK_MAGIC2(radar, soapysdr_echotimer_stretch);
 GR_SWIG_BLOCK_MAGIC2(radar, soapysdr_source_stretch);
 %include "radar/tagged_stream_align_radar_pulse_cc.h"
 GR_SWIG_BLOCK_MAGIC2(radar, tagged_stream_align_radar_pulse_cc);
+%include "radar/estimator_stretch.h"
+GR_SWIG_BLOCK_MAGIC2(radar, estimator_stretch);

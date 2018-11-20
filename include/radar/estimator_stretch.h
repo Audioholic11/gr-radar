@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 Erik Moore.
+ * Copyright 2018 Erik Moore DU2SRI.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
  */
 
 
-#ifndef INCLUDED_RADAR_TAGGED_STREAM_ALIGN_RADAR_PULSE_CC_H
-#define INCLUDED_RADAR_TAGGED_STREAM_ALIGN_RADAR_PULSE_CC_H
+#ifndef INCLUDED_RADAR_ESTIMATOR_STRETCH_H
+#define INCLUDED_RADAR_ESTIMATOR_STRETCH_H
 
 #include <radar/api.h>
 #include <gnuradio/block.h>
@@ -33,26 +33,26 @@ namespace gr {
      * \ingroup radar
      *
      */
-    class RADAR_API tagged_stream_align_radar_pulse_cc : virtual public gr::block
+    class RADAR_API estimator_stretch : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<tagged_stream_align_radar_pulse_cc> sptr;
+      typedef boost::shared_ptr<estimator_stretch> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of radar::tagged_stream_align_radar_pulse_cc.
+       * \brief Return a shared_ptr to a new instance of radar::estimator_stretch.
        *
-       * To avoid accidental use of raw pointers, radar::tagged_stream_align_radar_pulse_cc's
+       * To avoid accidental use of raw pointers, radar::estimator_stretch's
        * constructor is in a private implementation
-       * class. radar::tagged_stream_align_radar_pulse_cc::make is the public interface for
+       * class. radar::estimator_stretch::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int samp_rate=0, const std::string& len_key="chirp_len", int chirp_len=0,int debug_print=false);
+      static sptr make(int samp_rate, float center_freq, float bandwidth, int chirp_len, int samp_up, int samp_down ,float DC_freq_offset);
 
       //Variable Sets and gets
-      virtual void set_debug_print(int debug_print)=0;
+      virtual void set_dc_freq_offset(float freq_offset)=0;
     };
 
   } // namespace radar
 } // namespace gr
 
-#endif /* INCLUDED_RADAR_TAGGED_STREAM_ALIGN_RADAR_PULSE_CC_H */
+#endif /* INCLUDED_RADAR_ESTIMATOR_STRETCH_H */

@@ -1,0 +1,53 @@
+<block>
+  <name>Estimator stretch</name>
+  <key>radar_estimator_stretch</key>
+  <category>[RADAR]/Estimators</category>
+  <import>import radar</import>
+  <make>radar.estimator_stretch($samp_rate, $center_freq, $bandwidth, $chirp_len, $samp_up, $samp_down,$DC_freq_offset)</make>
+  <callback>set_dc_freq_offset($DC_freq_offset)</callback>
+  <param>
+    <name>Samp_rate</name>
+    <key>samp_rate</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Center_freq</name>
+    <key>center_freq</key>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Bandwidth</name>
+    <key>bandwidth</key>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Chirp_len</name>
+    <key>chirp_len</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Samp_up</name>
+    <key>samp_up</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Samp_down</name>
+    <key>samp_down</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>DC Freq Offset</name>
+    <key>DC_freq_offset</key>
+    <type>float</type>
+  </param>
+  <sink>
+    <name>Msg in Stretch</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+  <source>
+    <name>Msg out</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+</block>

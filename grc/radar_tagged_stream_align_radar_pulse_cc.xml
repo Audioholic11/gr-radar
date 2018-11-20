@@ -1,9 +1,10 @@
 <block>
   <name>Tagged stream align radar pulse cc</name>
-  <key>radar_tagged_stream_align_pulse_cc</key>
+  <key>radar_tagged_stream_align_radar_pulse_cc</key>
   <category>[RADAR]/SoapySDR</category>
   <import>import radar</import>
-  <make>radar.tagged_stream_align_pulse_cc($samp_rate, $len_key, $chirp_len)</make>
+  <make>radar.tagged_stream_align_radar_pulse_cc($samp_rate, $len_key, $chirp_len,$debug_print)</make>
+  <callback>set_debug_print($debug_print)</callback>
   <param>
     <name>Samp_rate</name>
     <key>samp_rate</key>
@@ -17,9 +18,15 @@
     <type>string</type>
   </param>
   <param>
-    <name>Chirp_len</name>
+    <name>Chirp Length</name>
     <key>chirp_len</key>
     <value>0</value>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Debug Print</name>
+    <key>debug_print</key>
+    <value>true</value>
     <type>int</type>
   </param>
   <sink>
