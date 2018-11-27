@@ -1,17 +1,17 @@
 /* -*- c++ -*- */
-/* 
+/*
  * Copyright 2014 Communications Engineering Lab, KIT.
- * 
+ *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
@@ -48,7 +48,7 @@ namespace gr {
 		d_samp_protect = samp_protect;
 		d_max_freq = max_freq;
 		d_cut_max_freq = cut_max_freq;
-		
+
 		// Register message port
 		d_port_id = pmt::mp("Msg out");
 		message_port_register_out(d_port_id);
@@ -67,19 +67,19 @@ namespace gr {
       int noutput_items = 0;
       return noutput_items ;
     }
-    
+
     void
     find_max_peak_c_impl::set_threshold(float threshold)
     {
       d_threshold = threshold;
     }
-    
+
     void
     find_max_peak_c_impl::set_samp_protect(int samp)
     {
       d_samp_protect = samp;
     }
-    
+
     void
     find_max_peak_c_impl::set_max_freq(std::vector<float> freq){
 		d_max_freq = freq;
@@ -92,16 +92,17 @@ namespace gr {
                        gr_vector_void_star &output_items)
     {
         const gr_complex *in = (const gr_complex *) input_items[0];
-        
+
         // Find max peak detection
         d_freq.clear();
         d_pks.clear();
         d_angle.clear();
-        
+
         int k_max_pos, k_max_neg;
         if(d_cut_max_freq){
 			k_max_pos = (ninput_items[0]/float(d_samp_rate))*d_max_freq[1];
 			k_max_neg = ninput_items[0]+(ninput_items[0]/float(d_samp_rate))*d_max_freq[0];
+      //std::cout << "max\min positions" << k_max_neg << "  "<< k_max_pos << std::endl;
 		}
         int k = -1;
         float hold = -1;
@@ -116,7 +117,7 @@ namespace gr {
 				k = p;
 			}
 		}
-        
+
         if(k!=-1){
 			if(k<=ninput_items[0]/2) d_freq.push_back(k*(d_samp_rate/(float)ninput_items[0])); // add frequency to message vector d_freq
 			else d_freq.push_back(-(float)d_samp_rate+k*(d_samp_rate/(float)ninput_items[0]));
@@ -126,7 +127,7 @@ namespace gr {
 
         // get rx_time tag
 		get_tags_in_range(d_tags,0,nitems_read(0),nitems_read(0)+1,pmt::string_to_symbol("rx_time"));
-		
+
 		// setup msg pmt
 		if(d_tags.size()>0) d_ptimestamp = pmt::list2(pmt::string_to_symbol("rx_time"),d_tags[0].value);
 		else d_ptimestamp = pmt::list2(pmt::string_to_symbol("rx_time"),pmt::make_tuple(pmt::from_uint64(0),pmt::from_double(-1))); // if no timetag is found, set to 0 and frac_sec to -1
@@ -134,7 +135,7 @@ namespace gr {
 		d_ppks = pmt::list2(pmt::string_to_symbol("power"),pmt::init_f32vector(d_pks.size(),d_pks));
 		d_pangle = pmt::list2(pmt::string_to_symbol("phase"),pmt::init_f32vector(d_angle.size(),d_angle));
 		d_value = pmt::list4(d_ptimestamp,d_pfreq,d_ppks,d_pangle);
-		
+
 		// publish message
 		message_port_pub(d_port_id,d_value);
 
@@ -144,4 +145,3 @@ namespace gr {
 
   } /* namespace radar */
 } /* namespace gr */
-

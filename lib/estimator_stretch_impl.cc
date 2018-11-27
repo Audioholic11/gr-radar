@@ -113,7 +113,7 @@ namespace gr {
       float last_range_estimate=0;
   		for(int k=0; k<freq_stretch.size(); k++){
 
-        range_estimate = (freq_stretch[k]-d_freq_offset)/d_const_stretch/2*c_light;
+        range_estimate = (freq_stretch[k]-d_freq_offset)/d_const_stretch/4*c_light;
         if(range_estimate>last_range_estimate)
         {
   			     range_stretch.push_back(range_estimate);
